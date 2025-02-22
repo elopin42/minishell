@@ -6,18 +6,18 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:11:15 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/22 23:25:31 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/22 23:35:44 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 void    minishell_loop(t_env *ms)
 {
     while (1)
     {
         ms->cmd_line = readline("minishell> ");
-        fd_printf(1, "%s\n", cmd_line);
+        fd_printf(1, "%s\n", ms->cmd_line);
         ms->tokens = get_tokens(ms);
     }
 }

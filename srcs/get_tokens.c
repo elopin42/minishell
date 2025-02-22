@@ -6,11 +6,11 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/21 09:26:54 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/02/22 23:36:28 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 int     count_tokens(char *line)
 {
@@ -43,5 +43,5 @@ int     count_tokens(char *line)
 
 char    **get_tokens(t_env *ms)
 {
-    if ()
+	return (0);
 }

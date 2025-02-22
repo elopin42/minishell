@@ -6,11 +6,11 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:10:21 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/21 09:12:13 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/02/22 23:32:59 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 void    print_tab(char **tab)
 {
