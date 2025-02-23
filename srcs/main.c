@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:11:15 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/22 23:35:44 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/23 04:07:58 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 
 void    minishell_loop(t_env *ms)
 {
-    while (1)
+    while (42)
     {
         ms->cmd_line = readline("minishell> ");
-        fd_printf(1, "%s\n", ms->cmd_line);
-        ms->tokens = get_tokens(ms);
+//        fd_printf(1, "%s\n", ms->cmd_line);
+        get_tokens(ms);
+		fd_printf(1, "good\n");
+		print_tab(ms->tokens);
+		// tout marche mais le ms->tokens ne passe pas dans print_tab
     }
 }
 

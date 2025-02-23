@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:12:09 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/22 23:36:11 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/23 02:51:08 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <readline/history.h>
 # include <stdbool.h>
 
-char    **get_tokens(t_env *ms);
+void	get_tokens(t_env *ms);
+void    print_tab(char **tab);
 
 #endif

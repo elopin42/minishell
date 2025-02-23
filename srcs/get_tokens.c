@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/22 23:36:28 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/23 04:00:09 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ int     count_tokens(char *line)
     in_quotes = 0;
     i = 0;
     ret = 0;
-    if (line[i] == ' ')
-        while (line[i] && line[i] == ' ')
-            i++;
+    while (line[i] && line[i] == ' ')
+        i++;
     while(line[i])
     {
         if (line[i + 1] == 0 && line[i] != ' ')
@@ -41,7 +40,44 @@ int     count_tokens(char *line)
     return (ret);
 }
 
-char    **get_tokens(t_env *ms)
+int     string_to_tokens(char *line, int save_count)
 {
-	return (0);
+    int     i;
+    bool     in_quotes;
+
+	i = save_count;
+	in_quotes = 0;
+    while (line[i] && line[i] == ' ')
+		i++;
+    while(line[i])
+    {
+        if (line[i + 1] == 0 && line[i] != ' ')
+            break ;
+        if (line[i] == '\"')
+            in_quotes = !in_quotes;
+        if (line[i] == ' ' && !in_quotes)
+			break ;
+		i++;
+    }
+	return (i + 1);
+}
+
+void	get_tokens(t_env *ms)
+{
+	int	count_to;
+	int	save_count;
+	int	i;
+
+	i = count_tokens(ms->cmd_line) + 1;
+	save_count = 0;
+	count_to = string_to_tokens(ms->cmd_line, save_count);
+	ms->tokens = ft_calloc(i + 1, sizeof(char *));
+	while(--i > 0)
+	{
+		ms->tokens[i] = ft_substr(ms->cmd_line, save_count, count_to - save_count);
+		/*if (ms->tokens[i])
+			fd_printf(1,	"token --> %s \n", ms->tokens[i]);*/
+		save_count = count_to;
+		count_to = string_to_tokens(ms->cmd_line, save_count);
+	}
 }

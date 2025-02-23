@@ -3,7 +3,9 @@ FLAGS=-Wall -Wextra -Werror -I includes/ -I libft/includes -I fd_printf/includes
 LIBFT=libft/libft.a
 FD_PRINTF=fd_printf/libfdprintf.a
 LIBSFLAGS=-L libft/ -lft -L fd_printf/ -lfdprintf -lreadline
-SRCSF=main.c
+SRCSF=main.c \
+	  get_tokens.c \
+	  debug_tools.c
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/
