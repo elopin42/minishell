@@ -6,11 +6,18 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:11:15 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/23 04:07:58 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/23 04:21:18 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	handler(int	sig)
+{
+	(void)	sig;
+	exit(fd_printf(2, "bye..."));
+	// bug si \n a la fin du bye meme si fd a 1
+}
 
 void    minishell_loop(t_env *ms)
 {
@@ -22,6 +29,7 @@ void    minishell_loop(t_env *ms)
 		fd_printf(1, "good\n");
 		print_tab(ms->tokens);
 		// tout marche mais le ms->tokens ne passe pas dans print_tab
+		signal(SIGINT, handler);
     }
 }
 
