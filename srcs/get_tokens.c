@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/24 18:28:11 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/24 23:06:06 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int     count_tokens(char *line)
     in_quotes = 0;
     i = 0;
     ret = 0;
+	if (!line)
+		return (0);
     while (line[i] && line[i] == ' ')
         i++;
     while(line[i])
@@ -47,6 +49,8 @@ int     string_to_tokens(char *line, int save_count)
 
 	i = save_count;
 	in_quotes = 0;
+	if (!line)
+		return (0);
     while (line[i] && line[i] == ' ')
 		i++;
     while(line[i])
@@ -80,4 +84,5 @@ void	get_tokens(t_env *ms)
 		save_count = count_to;
 		count_to = string_to_tokens(ms->cmd_line, save_count);
 	}
+	//free_exit_touch(ms);
 }

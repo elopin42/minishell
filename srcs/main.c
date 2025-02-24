@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:11:15 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/24 18:25:33 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/24 23:19:55 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,13 @@ void    minishell_loop(t_env *ms)
     while (42)
     {
         ms->cmd_line = readline("minishell> ");
+		if (!ms->cmd_line)
+		{
+			fd_printf(1, "EXIT ...");
+			exit (0);
+		}
         get_tokens(ms);
 		print_tab(ms->tokens);
-		signal(SIGINT, handler);
-//		signal(SIGSTOP, handler);
     }
 }
 
@@ -36,5 +39,6 @@ int     main(const int ac, const char **av, const char **envp)
     (void)envp;
     ft_bzero(&ms, sizeof(t_env));
     ms.envp = envp;
+	setup_signals();
     minishell_loop(&ms);
 }
