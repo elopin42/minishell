@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/23 04:00:09 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/23 23:43:42 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,16 @@ void	get_tokens(t_env *ms)
 	int	count_to;
 	int	save_count;
 	int	i;
+	int	j;
 
-	i = count_tokens(ms->cmd_line) + 1;
+	j = 0;
+	i = count_tokens(ms->cmd_line);
 	save_count = 0;
 	count_to = string_to_tokens(ms->cmd_line, save_count);
 	ms->tokens = ft_calloc(i + 1, sizeof(char *));
-	while(--i > 0)
+	while(--i >= 0)
 	{
-		ms->tokens[i] = ft_substr(ms->cmd_line, save_count, count_to - save_count);
+		ms->tokens[j++] = ft_substr(ms->cmd_line, save_count, count_to - save_count);
 		/*if (ms->tokens[i])
 			fd_printf(1,	"token --> %s \n", ms->tokens[i]);*/
 		save_count = count_to;
