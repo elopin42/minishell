@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:12:09 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/23 04:15:30 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/24 18:25:17 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,6 @@
 
 void	get_tokens(t_env *ms);
 void    print_tab(char **tab);
+void	handler(int	sig);
 
 #endif
