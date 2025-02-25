@@ -6,14 +6,14 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:11:15 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/25 03:17:33 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/25 03:34:57 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <signal.h>
 
-
+//j'ai mit un split en attendant ton parsing 
+//segfault avec \n
 
 void    minishell_loop(t_env *ms)
 {
@@ -26,7 +26,7 @@ void    minishell_loop(t_env *ms)
 			fd_printf(1, "exit\n");
 			exit (0);
 		}
-        get_tokens(ms);
+		get_tokens(ms);
 		choos_command(ms);
 	//	print_tab(ms->tokens);
     }

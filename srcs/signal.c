@@ -6,27 +6,11 @@
 /*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 18:24:18 by elopin            #+#    #+#             */
-/*   Updated: 2025/02/25 01:34:10 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/25 03:28:47 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-/*void 	free_exit_touch(t_env *ms)
-{
-	static char ***tab = NULL;
-	int	i;
-
-	i = -1;
-	if (ms)
-		tab = &ms->tokens;
-	else 
-	{
-		while((*tab)[++i])
-			free((*tab)[i]);
-		free((*tab));
-	}
-}*/
 
 void setup_signals(void)
 {
