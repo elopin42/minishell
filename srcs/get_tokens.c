@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/24 23:06:06 by elopin           ###   ########.fr       */
+/*   Updated: 2025/02/25 03:15:48 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int     count_tokens(char *line)
     return (ret);
 }
 
-int     string_to_tokens(char *line, int save_count)
+/*int     string_to_tokens(char *line, int save_count)
 {
     int     i;
     bool     in_quotes;
@@ -85,4 +85,9 @@ void	get_tokens(t_env *ms)
 		count_to = string_to_tokens(ms->cmd_line, save_count);
 	}
 	//free_exit_touch(ms);
+}*/
+
+void	get_tokens(t_env *ms)
+{
+	ms->tokens = ft_split(ms->cmd_line, ' ');
 }

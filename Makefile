@@ -6,7 +6,8 @@ LIBSFLAGS=-L libft/ -lft -L fd_printf/ -lfdprintf -lreadline
 SRCSF=main.c \
 	  get_tokens.c \
 	  debug_tools.c \
-	  signal.c
+	  signal.c		\
+	  exec.c
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/
