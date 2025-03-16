@@ -6,7 +6,7 @@
 /*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 18:24:18 by elopin            #+#    #+#             */
-/*   Updated: 2025/02/25 03:28:47 by elopin           ###   ########.fr       */
+/*   Updated: 2025/03/16 12:15:31 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ void setup_signals(void)
 
     sigaction(SIGINT, &sa, NULL);
     sigaction(SIGQUIT, &sa, NULL);
+
+	sa.sa_handler = SIG_IGN;
+    sigaction(SIGTSTP, &sa, NULL);
 }
 
 void	handler(int	sig)
