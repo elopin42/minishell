@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/25 03:15:48 by elopin           ###   ########.fr       */
+/*   Updated: 2025/03/16 14:50:31 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,15 @@ int     count_tokens(char *line)
     return (ret);
 }
 
-/*int     string_to_tokens(char *line, int save_count)
+int     string_to_tokens(char *line, int save_count)
 {
     int     i;
     bool     in_quotes;
+    bool    in_dquotes;
 
 	i = save_count;
 	in_quotes = 0;
+    in_dquotes = 0;
 	if (!line)
 		return (0);
     while (line[i] && line[i] == ' ')
@@ -57,19 +59,93 @@ int     count_tokens(char *line)
     {
         if (line[i + 1] == 0 && line[i] != ' ')
             break ;
-        if (line[i] == '\"')
+        if (line[i] == '\"' && !in_quotes)
+            in_dquotes = !in_dquotes;
+        if (line[i] == '\'' && !in_dquotes)
             in_quotes = !in_quotes;
-        if (line[i] == ' ' && !in_quotes)
+        if (line[i] == ' ' && !in_dquotes && !in_quotes)
 			break ;
 		i++;
     }
 	return (i + 1);
 }
 
+bool    has_dquotes(char *tmp)
+{
+    while (*tmp)
+        if (*tmp++ == '\"')
+            return (1);
+    return (0);
+}
+
+bool    has_squotes(char *tmp)
+{
+    while (*tmp)
+        if (*tmp++ == '\'')
+            return (1);
+    return (0);
+}
+
+static int	is_in_set(char c, char const *set)
+{
+	int	i;
+
+	i = 0;
+	while (set[i])
+	{
+		if (set[i] == c)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+static int  count_chars_to_remove(char const *s1, char const *set)
+{
+    int     i;
+    int     ret;
+
+    ret = 0;
+i = 0;
+    while (s1[i])
+    {
+        if (is_in_set(s1[i], set))
+            ret++;
+        i++;
+    }
+    return (ret);
+}
+
+char	*ft_strtrimv2(char const *s1, char const *set)
+{
+    char    *ret;
+    int     i;
+    int     j;
+
+    i = 0;
+    j = 0;
+    ret = (char *)malloc(ft_strlen(s1) - count_chars_to_remove(s1, set));
+    if (!ret)
+        return (0);
+    while (s1[j])
+    {
+        if (!is_in_set(s1[j], set))
+        {
+            ret[i] = s1[j];
+            i++;
+        }
+        j++;
+    }
+    ret[i] = 0;
+    return (ret);
+}
+
+
 void	get_tokens(t_env *ms)
 {
 	int	count_to;
 	int	save_count;
+    char    *tmp;
 	int	i;
 	int	j;
 
@@ -80,14 +156,17 @@ void	get_tokens(t_env *ms)
 	ms->tokens = ft_calloc(i + 1, sizeof(char *));
 	while(--i >= 0)
 	{
-		ms->tokens[j++] = ft_substr(ms->cmd_line, save_count, count_to - save_count);
-		save_count = count_to;
+		tmp = ft_substr(ms->cmd_line, save_count, count_to - save_count);
+        if (has_dquotes(tmp))
+            ms->tokens[j] = ft_strtrimv2(tmp, "\"");
+	    else if (has_squotes(tmp))
+            ms->tokens[j] = ft_strtrimv2(tmp, "\'");
+        else
+            ms->tokens[j] = ft_strtrimv2(tmp, " ");
+        free(tmp);
+        tmp = NULL;
+        j++;
+        save_count = count_to;
 		count_to = string_to_tokens(ms->cmd_line, save_count);
 	}
-	//free_exit_touch(ms);
-}*/
-
-void	get_tokens(t_env *ms)
-{
-	ms->tokens = ft_split(ms->cmd_line, ' ');
 }

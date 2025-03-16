@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/24 18:24:18 by elopin            #+#    #+#             */
-/*   Updated: 2025/03/16 12:15:31 by elopin           ###   ########.fr       */
+/*   Created: 2025/03/16 13:15:41 by tbeauman          #+#    #+#             */
+/*   Updated: 2025/03/16 17:30:27 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../includes/minishell.h"
 
@@ -20,8 +21,14 @@ void setup_signals(void)
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
 
-    sigaction(SIGINT, &sa, NULL);
-    sigaction(SIGQUIT, &sa, NULL);
+    if (sigaction(SIGINT, &sa, NULL) == -1)
+	{
+		perror("SIGINT error\n");
+	}
+    if (sigaction(SIGQUIT, &sa, NULL) == -1)
+	{
+		perror("SIGQUIT error\n");
+	}
 
 	sa.sa_handler = SIG_IGN;
     sigaction(SIGTSTP, &sa, NULL);

@@ -7,7 +7,9 @@ SRCSF=main.c \
 	  get_tokens.c \
 	  debug_tools.c \
 	  signal.c		\
-	  exec.c
+	  exec.c		\
+	  get_ast.c		\
+	  free_tools.c	
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/
@@ -24,13 +26,12 @@ $(FD_PRINTF):
 
 $(NAME): $(LIBFT) $(FD_PRINTF) $(OBJDIR) $(OBJS)
 	@echo "\033[0m\033[1;35m|\033[0m"
-	@mv $(OBJSF) $(OBJDIR)
 	@cc $(LIBFT) $(FD_PRINTF) $(FLAGS) -o $(NAME) $(OBJS) $(LIBSFLAGS)
 	@echo "\033[1;32mminishell ready ✓\033[0m"
 
 $(OBJDIR)%.o:$(SRCDIR)%.c
 	@echo " \c"
-	@cc $(FLAGS) -c $^
+	@cc $(FLAGS) -c $^ -o $@
 
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
