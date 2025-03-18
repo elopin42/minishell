@@ -9,7 +9,12 @@ SRCSF=main.c \
 	  signal.c		\
 	  exec.c		\
 	  get_ast.c		\
-	  free_tools.c	
+	  free_tools.c	\
+	  get_list_tokens.c \
+	  ft_tokens_list_tools.c \
+	  built-in.c \
+	  get_next_line.c \
+	  get_next_line_utils.c
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/

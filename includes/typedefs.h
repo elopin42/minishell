@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:48:42 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/16 18:18:32 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:49:43 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,33 @@ typedef enum e_node_type
     NODE_PIPE,
     NODE_REDIR_IN,
     NODE_REDIR_OUT,
-    NODE_APPEND_IN,
-    NODE_APPEND_OUT
+    NODE_HERE_DOC,
+    NODE_APPEND_OUT,
+    NODE_AND,
+    NODE_OR,
+    JSP
 }           t_node_type;
+
+typedef struct s_tokens
+{
+    char            *token;
+    t_node_type     type;
+    struct s_tokens *prev;
+    struct s_tokens *next;
+}               t_tokens;
+
+typedef struct s_node
+{
+    struct s_node   *parent;
+    struct s_node   *left;
+    struct s_node   *right;
+    t_tokens        *tokens;
+}               t_node;
 
 typedef struct s_ast
 {
     t_node_type     type;
-    char            **args;
+    t_tokens        *cmd;
     char            *file;
     struct s_ast    *left;
     struct s_ast    *right;
@@ -36,7 +55,8 @@ typedef struct s_ast
 typedef struct s_env
 {
     char        *cmd_line;
-    char        **tokens;
+    t_tokens    *tokens;
+    char        **array_tokens;
     char        **envp;
 	int			pididi;
     t_ast       *ast;
