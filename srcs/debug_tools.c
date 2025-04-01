@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:10:21 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/18 17:04:30 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/03/30 17:53:56 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	print_ast(t_ast *node, int depth)
 		fd_printf(2, "CMD: ");
 		head = node->cmd;
 		while (node->cmd)
-		{	
+		{
 			fd_printf(2, "%s ", node->cmd->token);
 			node->cmd = node->cmd->next;
 		}

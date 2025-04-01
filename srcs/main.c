@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:11:15 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/18 17:25:57 by elopin           ###   ########.fr       */
+/*   Updated: 2025/03/30 17:54:27 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 // j'ai mit un split en attendant ton parsing
 // segfault avec \n
 
-void save_history()
+void	save_history(void)
 {
-    write_history(HISTORY_FILE);
+	write_history(HISTORY_FILE);
 }
 
 void	minishell_loop(t_env *ms)

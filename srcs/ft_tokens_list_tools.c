@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tokens_list_tools.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:55:56 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/18 15:59:52 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/03/30 17:54:10 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ t_tokens	*ft_new_token(void const *content, t_node_type type)
 	return (ret);
 }
 
-
 int	ft_lst_tokens_size(t_tokens *lst)
 {
 	int	i;
@@ -104,9 +103,9 @@ int	ft_lst_tokens_size(t_tokens *lst)
 
 t_tokens	*dup_tokens(t_tokens *og)
 {
-	t_tokens	*head;
-	t_tokens	*dup;
-	char		*token;
+	t_tokens *head;
+	t_tokens *dup;
+	char *token;
 
 	dup = NULL;
 	head = og;

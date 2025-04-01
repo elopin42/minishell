@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_ast.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 18:18:48 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/18 17:04:32 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/03/30 17:54:13 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ t_ast	*init_node(void)
 
 t_ast	*get_ast(t_tokens *og_tokens)
 {
-	t_tokens *head;
-	t_tokens *right_tokens;
+	t_tokens	*head;
+	t_tokens	*right_tokens;
 	t_ast		*node;
-	t_tokens *tokens;
+	t_tokens	*tokens;
 
 	tokens = dup_tokens(og_tokens);
 	head = tokens;
@@ -42,10 +42,10 @@ t_ast	*get_ast(t_tokens *og_tokens)
 		return (node);
 	while (tokens)
 	{
-		if (!ft_strcmp(tokens->token, "&&") ||
-		!ft_strcmp(tokens->token, "||"))
+		if (!ft_strcmp(tokens->token, "&&") || !ft_strcmp(tokens->token, "||"))
 			break ;
-		tokens = tokens->next;;
+		tokens = tokens->next;
+		;
 	}
 	if (!tokens)
 	{
@@ -53,7 +53,7 @@ t_ast	*get_ast(t_tokens *og_tokens)
 		while (tokens)
 		{
 			if (!ft_strcmp(tokens->token, "|"))
-				break;
+				break ;
 			tokens = tokens->next;
 		}
 		if (!tokens)
@@ -61,11 +61,10 @@ t_ast	*get_ast(t_tokens *og_tokens)
 			tokens = head;
 			while (tokens)
 			{
-				if (!ft_strcmp(tokens->token, ">") ||
-				!ft_strcmp(tokens->token, ">>") ||
-				!ft_strcmp(tokens->token, "<") ||
-				!ft_strcmp(tokens->token, "<<"))
-					break;
+				if (!ft_strcmp(tokens->token, ">") || !ft_strcmp(tokens->token,
+						">>") || !ft_strcmp(tokens->token, "<")
+					|| !ft_strcmp(tokens->token, "<<"))
+					break ;
 				tokens = tokens->next;
 			}
 			if (!tokens)
@@ -83,7 +82,6 @@ t_ast	*get_ast(t_tokens *og_tokens)
 					node->type = NODE_HERE_DOC;
 				else if (!ft_strcmp(tokens->token, ">>"))
 					node->type = NODE_APPEND_OUT;
-
 				right_tokens = tokens->next;
 				if (right_tokens)
 				{
@@ -105,7 +103,7 @@ t_ast	*get_ast(t_tokens *og_tokens)
 			if (tokens->prev)
 				(tokens->prev)->next = NULL;
 			node->left = get_ast(head);
-			node->right = get_ast(right_tokens);	
+			node->right = get_ast(right_tokens);
 		}
 	}
 	else

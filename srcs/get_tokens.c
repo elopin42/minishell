@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_tokens.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/18 18:09:52 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/03/30 17:54:22 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,10 @@ int	count_tokens(char *line)
 
 bool	is_operand(char *str)
 {
-	if (!ft_strncmp(str, "|", 1) ||
-	!ft_strncmp(str, "<<", 2) ||
-	!ft_strncmp(str, ">>", 2) ||
-	!ft_strncmp(str, "<", 1) ||
-	!ft_strncmp(str, ">", 1) ||
-	!ft_strncmp(str, "&&", 2) ||
-	!ft_strncmp(str, "||", 2))
+	if (!ft_strncmp(str, "|", 1) || !ft_strncmp(str, "<<", 2)
+		|| !ft_strncmp(str, ">>", 2) || !ft_strncmp(str, "<", 1)
+		|| !ft_strncmp(str, ">", 1) || !ft_strncmp(str, "&&", 2)
+		|| !ft_strncmp(str, "||", 2))
 		return (1);
 	return (0);
 }
@@ -76,7 +73,8 @@ int	string_to_tokens(char *line, int save_count)
 			in_dquotes = !in_dquotes;
 		if (line[i] == '\'' && !in_dquotes)
 			in_quotes = !in_quotes;
-		if ((line[i] == ' ' || is_operand(&line[i])) && !in_dquotes && !in_quotes)
+		if ((line[i] == ' ' || is_operand(&line[i])) && !in_dquotes
+			&& !in_quotes)
 			break ;
 		i++;
 	}
