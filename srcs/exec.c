@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 01:42:38 by elopin            #+#    #+#             */
-/*   Updated: 2025/03/30 20:17:58 by elopin           ###   ########.fr       */
+/*   Updated: 2025/04/12 02:35:46 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,9 @@ char	**tokens_to_array(t_tokens *cmd)
 {
 	char	**ret;
 	int		i;
+	t_tokens *head;
 
+	head = cmd;
 	i = 0;
 	ret = (char **)malloc((1 + ft_lst_tokens_size(cmd)) * sizeof(char *));
 	if (!ret)
@@ -94,6 +96,7 @@ char	**tokens_to_array(t_tokens *cmd)
 		i++;
 		cmd = cmd->next;
 	}
+	cmd = head;
 	ret[i] = NULL;
 	return (ret);
 }
@@ -102,7 +105,7 @@ bool	execute_cmd(t_tokens *cmd, t_env *ms)
 {
 	char	*path;
 	char	**argscmd;
-
+	
 	if (access(cmd->token, F_OK) == 0)
 		path = ft_strdup(cmd->token);
 	else
@@ -116,7 +119,6 @@ bool	execute_cmd(t_tokens *cmd, t_env *ms)
 		fd_printf(1, "Malloc error\n");
 		exit(EXIT_FAILURE);
 	}
-	print_tab(argscmd);
 	if (execve(path, argscmd, ms->envp) == -1)
 	{
 		free(path);
@@ -126,16 +128,33 @@ bool	execute_cmd(t_tokens *cmd, t_env *ms)
 	return (true);
 }
 
+void	fork_and_execute_cmd(t_tokens *cmd, t_env *ms)
+{
+	pid_t	pid;
 
-
-
-
-
-
-
-
-
-
-
-
+	if (found_builtin(cmd, ms))
+		return ;
+	pid = fork();
+	ms->pididi = pid;
+	if (pid == -1)
+	{
+		perror("fork");
+		fd_printf(2, "\n%d %s\n", __FILE__, __LINE__);
+		exit_clean(ms, EXIT_FAILURE);
+	}
+	if (pid == 0)
+	{		
+		expand_command(&cmd, ms);
+		execute_cmd(cmd, ms);
+	}
+	else
+	{
+		wait(NULL);
+		if (ms->ast->type == NODE_PIPE)
+		{
+			dup2(ms->saved_stdin, STDIN_FILENO);
+			close(ms->saved_stdin);
+		}
+	}
+}
 

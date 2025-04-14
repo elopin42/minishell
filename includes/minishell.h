@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:12:09 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/30 20:18:21 by elopin           ###   ########.fr       */
+/*   Updated: 2025/04/12 02:46:15 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ void 	free_tab(char **tab);
 bool	execute_cmd(t_tokens *cmd, t_env *ms);
 void	cleanup(t_env *ms);
 void	exit_clean(t_env *ms, int exit_code);
-t_ast   *get_ast(t_tokens *tokens);
+t_ast   *get_ast(t_tokens **tokens, t_env *ms);
 void print_ast(t_ast *node, int depth);
 void	ft_tokens_add_back(t_tokens **lst, t_tokens *new);
 void	ft_tokens_add_front(t_tokens **lst, t_tokens *new);
 void	ft_clear_tokens(t_tokens **lst, void (*del)(void *));
 void	ft_del_token(t_tokens *lst, void (*del)(void *));
-t_tokens	*ft_new_token(void const *content, t_node_type type);
+t_tokens	*ft_new_token(void const *content, t_token_type type);
 int	ft_lst_tokens_size(t_tokens *lst);
 void	print_tokens(t_tokens *tokens);
 void	get_list_tokens(t_env *ms);
@@ -64,5 +64,20 @@ void	handle_redir_out(t_ast *ast, t_env *ms);
 void	handle_redir_in(t_ast *ast, t_env *ms);
 void	handle_pipe(t_ast *ast, t_env *ms);
 void	consume_tree(t_ast *ast, t_env *ms);
+void    expand_tokens(t_ast *ast, t_env *ms);
+void    expand_command(t_tokens **cmd, t_env *ms);
+void	fork_and_execute_cmd(t_tokens *cmd, t_env *ms);
+
+t_ast	*init_node(void);
+t_ast	*handle_parenthesis(t_tokens *tokens, t_tokens **og_tokens, t_env *ms);
+void	ft_clear_right_tokens(t_tokens **lst, void (*del)(void *));
+void	ft_clear_left_tokens(t_tokens **lst, void (*del)(void *));
+void    set_error(t_env *ms, int err_code);
+
+void ft_old_and_pwd(t_env *ms);
+void close_all_fds();
+
+void	read_nl_bs(char **next, char **tmp, t_env *ms, int *i);
+void	read_nl_quotes(char **next, char **tmp, t_env *ms, int *i);
 
 #endif

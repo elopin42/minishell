@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 14:18:45 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/18 17:20:15 by elopin           ###   ########.fr       */
+/*   Updated: 2025/04/11 05:39:42 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,21 @@
 
 void	cleanup(t_env *ms)
 {
-	free_tab(ms->array_tokens);
+	free(ms->cmd_line);
+	ft_clear_tokens(&ms->tokens, &free);
+	delete_ast(&ms->ast);
+	free_tab(ms->envp);
+	close_all_fds();
+}
+
+void close_all_fds()
+{
+    int i = 3;
+    while (i < 1024)
+    {
+        close(i);
+        i++;
+    }
 }
 
 void	exit_clean(t_env *ms, int exit_code)
@@ -51,8 +65,8 @@ void	delete_ast(t_ast **node)
 	delete_ast(&((*node)->right));
 	if ((*node)->cmd)
 		ft_clear_tokens(&((*node)->cmd), &free);
-	if ((*node)->file)
-		free((*node)->file);
+	if ((*node)->file_token)
+		ft_clear_tokens(&(*node)->file_token, &free);
 	free(*node);
 	*node = NULL;
 }

@@ -4,17 +4,19 @@ LIBFT=libft/libft.a
 FD_PRINTF=fd_printf/libfdprintf.a
 LIBSFLAGS=-L libft/ -lft -L fd_printf/ -lfdprintf -lreadline
 SRCSF=main.c \
-	  get_tokens.c \
 	  debug_tools.c \
 	  signal.c		\
 	  exec.c		\
+	  expand_tokens.c \
 	  get_ast.c		\
 	  free_tools.c	\
 	  get_list_tokens.c \
 	  ft_tokens_list_tools.c \
 	  built-in.c	\
 	  consume_tree.c	\
-	  consume_tree2.c
+	  consume_tree2.c	\
+	  error_handling.c	\
+	  handle_parenthesis.c
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/

@@ -6,12 +6,14 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:48:42 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/18 16:49:43 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/04/12 03:18:39 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPEDEFS_H
 # define TYPEDEFS_H
+
+# include <stdbool.h>
 
 typedef enum e_node_type
 {
@@ -23,13 +25,20 @@ typedef enum e_node_type
     NODE_APPEND_OUT,
     NODE_AND,
     NODE_OR,
-    JSP
+    UNDEFINED
 }           t_node_type;
+
+typedef enum e_token_type
+{
+    SQUOTES,
+    DQUOTES,
+    NOQUOTES
+}           t_token_type;
 
 typedef struct s_tokens
 {
     char            *token;
-    t_node_type     type;
+    t_token_type     type;
     struct s_tokens *prev;
     struct s_tokens *next;
 }               t_tokens;
@@ -46,6 +55,7 @@ typedef struct s_ast
 {
     t_node_type     type;
     t_tokens        *cmd;
+    t_tokens        *file_token;
     char            *file;
     struct s_ast    *left;
     struct s_ast    *right;
@@ -56,10 +66,47 @@ typedef struct s_env
 {
     char        *cmd_line;
     t_tokens    *tokens;
-    char        **array_tokens;
+    char        **argv;
     char        **envp;
 	int			pididi;
     t_ast       *ast;
+    int         err_flag;
+    int         saved_stdin;
 }               t_env;
 
+typedef struct s_parser
+{
+	t_tokens	*head;
+	t_tokens	*right_tokens;
+	t_tokens	*left_tokens;
+	t_ast		*node;
+	t_tokens	*tokens;
+	t_tokens	*file_token;
+}               t_parser;
+
+typedef struct s_pparser
+{
+	t_tokens *open;
+	t_tokens *close;
+	t_tokens *sub_expr;
+	t_tokens *after_close;
+	t_ast *sub_ast;
+	t_tokens *op;
+	t_tokens *right;
+	t_tokens *left;
+	t_ast *parent;
+}               t_pparser;
+
+typedef struct s_tknz_bools
+{
+    bool	in_quotes;
+	bool	in_dquotes;
+	unsigned int parenthesis_depth;
+}               t_tknz_bools;
+
+
+
+
+# define MALLOC_ERROR 1
+# define SYNTAX_ERROR 2
 #endif

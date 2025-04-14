@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_ast.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 18:18:48 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/30 17:54:13 by elopin           ###   ########.fr       */
+/*   Updated: 2025/04/12 01:52:05 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,182 +19,156 @@ t_ast	*init_node(void)
 	node = (t_ast *)malloc(sizeof(t_ast));
 	if (!node)
 		return (NULL);
+	node->file_token = NULL;
 	node->left = NULL;
 	node->right = NULL;
 	node->cmd = NULL;
 	node->file = NULL;
+	node->type = UNDEFINED;
 	return (node);
 }
 
-t_ast	*get_ast(t_tokens *og_tokens)
+bool	is_not_redir(char *token)
 {
-	t_tokens	*head;
-	t_tokens	*right_tokens;
-	t_ast		*node;
-	t_tokens	*tokens;
+	return (ft_strncmp(token, ">", 2) &&
+	ft_strncmp(token, "<", 2) &&
+	ft_strncmp(token, ">>", 3) &&
+	ft_strncmp(token, "<<", 3));
+}
 
-	tokens = dup_tokens(og_tokens);
-	head = tokens;
-	node = init_node();
-	if (!node)
-		return (NULL);
-	if (!tokens)
-		return (node);
-	while (tokens)
+void	cut_chain_and_recursive_call(t_parser *p, t_env *ms)
+{
+	p->right_tokens = p->tokens->next;
+	p->left_tokens = p->tokens->prev;
+	if (p->right_tokens)
+		p->right_tokens->prev = NULL;
+
+	if (p->left_tokens)
+		p->left_tokens->next = NULL;
+	else
+		p->head = NULL;
+
+	p->node->cmd = p->tokens;
+	p->node->cmd->prev = NULL;
+	p->node->cmd->next = NULL;
+
+	p->node->left = get_ast(&p->head, ms);
+	p->node->right = get_ast(&p->right_tokens, ms);
+
+}
+
+void	cut_chain_for_redir(t_parser *p, t_env *ms)
+{
+	p->file_token = p->tokens->next;
+	p->right_tokens = NULL;
+	p->left_tokens = p->tokens->prev;
+	if (p->file_token)
 	{
-		if (!ft_strcmp(tokens->token, "&&") || !ft_strcmp(tokens->token, "||"))
-			break ;
-		tokens = tokens->next;
-		;
+		p->node->file = p->file_token->token;
+		p->right_tokens = p->file_token->next;
+		p->file_token->prev = NULL;
+		p->file_token->next = NULL;
+		p->node->file_token = p->file_token;				
 	}
-	if (!tokens)
+	else
+		set_error(ms, SYNTAX_ERROR);
+	if (p->left_tokens)
+		p->left_tokens->next = NULL;
+	else
+		p->head = NULL;
+	p->node->cmd = p->tokens;
+	p->node->cmd->prev = NULL;
+	p->node->cmd->next = NULL;
+}
+
+void	recursive_call_for_redir(t_parser *p, t_env *ms)
+{
+	t_tokens *tmp;
+
+	p->node->left = get_ast(&p->head, ms);
+	if (p->right_tokens)
 	{
-		tokens = head;
-		while (tokens)
+		tmp = p->right_tokens;
+		p->right_tokens->prev->next = NULL;
+		tmp->prev = NULL;
+		p->node->right = get_ast(&tmp, ms);
+	}
+	else
+		p->node->right = NULL;
+}
+
+void	set_node_type(t_parser *p, t_env *ms)
+{
+	(void)ms;
+	if (!ft_strncmp(p->tokens->token, ">", 2))
+		p->node->type = NODE_REDIR_OUT;
+	else if (!ft_strncmp(p->tokens->token, "<", 2))
+		p->node->type = NODE_REDIR_IN;
+	else if (!ft_strncmp(p->tokens->token, "<<", 3))
+		p->node->type = NODE_HERE_DOC;
+	else if (!ft_strncmp(p->tokens->token, ">>", 3))
+		p->node->type = NODE_APPEND_OUT;
+	else if (!ft_strncmp(p->tokens->token, "&&", 3))
+		p->node->type = NODE_AND;
+	else if (!ft_strncmp(p->tokens->token, "||", 3))
+		p->node->type = NODE_OR;
+	else if (!ft_strncmp(p->tokens->token, "|", 2))
+		p->node->type = NODE_PIPE;
+	else
+		p->node->type = NODE_CMD;
+}
+
+void	no_logic_parser(t_parser *p, t_env *ms)
+{
+	p->tokens = p->head;
+	while (p->tokens && ft_strncmp(p->tokens->token, "|", 2))
+		p->tokens = p->tokens->next;
+	if (!p->tokens)
+	{
+		p->tokens = p->head;
+		while (p->tokens && is_not_redir(p->tokens->token))
+			p->tokens = p->tokens->next;
+		if (!p->tokens)
 		{
-			if (!ft_strcmp(tokens->token, "|"))
-				break ;
-			tokens = tokens->next;
-		}
-		if (!tokens)
-		{
-			tokens = head;
-			while (tokens)
-			{
-				if (!ft_strcmp(tokens->token, ">") || !ft_strcmp(tokens->token,
-						">>") || !ft_strcmp(tokens->token, "<")
-					|| !ft_strcmp(tokens->token, "<<"))
-					break ;
-				tokens = tokens->next;
-			}
-			if (!tokens)
-			{
-				node->cmd = head;
-				node->type = NODE_CMD;
-			}
-			else
-			{
-				if (!ft_strcmp(tokens->token, ">"))
-					node->type = NODE_REDIR_OUT;
-				else if (!ft_strcmp(tokens->token, "<"))
-					node->type = NODE_REDIR_IN;
-				else if (!ft_strcmp(tokens->token, "<<"))
-					node->type = NODE_HERE_DOC;
-				else if (!ft_strcmp(tokens->token, ">>"))
-					node->type = NODE_APPEND_OUT;
-				right_tokens = tokens->next;
-				if (right_tokens)
-				{
-					node->file = ft_strdup(right_tokens->token);
-					right_tokens->prev = NULL;
-				}
-				if (tokens->prev)
-					(tokens->prev)->next = NULL;
-				node->left = get_ast(head);
-				node->right = NULL;
-			}
+			p->node->cmd = p->head;
+			p->node->type = NODE_CMD;
 		}
 		else
 		{
-			node->type = NODE_PIPE;
-			right_tokens = tokens->next;
-			if (right_tokens)
-				right_tokens->prev = NULL;
-			if (tokens->prev)
-				(tokens->prev)->next = NULL;
-			node->left = get_ast(head);
-			node->right = get_ast(right_tokens);
+			set_node_type(p, ms);
+			cut_chain_for_redir(p, ms);
+			recursive_call_for_redir(p, ms);
 		}
 	}
 	else
 	{
-		if (!ft_strcmp(tokens->token, "&&"))
-			node->type = NODE_AND;
-		else
-			node->type = NODE_OR;
-		right_tokens = tokens->next;
-		if (right_tokens)
-			right_tokens->prev = NULL;
-		if (tokens->prev)
-			(tokens->prev)->next = NULL;
-		node->left = get_ast(head);
-		node->right = get_ast(right_tokens);
+		set_node_type(p, ms);
+		cut_chain_and_recursive_call(p,ms);
 	}
-	return (node);
 }
 
-/*
-t_ast	*get_ast(char *tokens, int *i)
+t_ast	*get_ast(t_tokens **og_tokens, t_env *ms)
 {
-	t_ast	*node;
-		int start;
-		int size;
-		int j;
+	t_parser	p;
 
-	if (!tokens || !tokens[*i])
-		return (NULL);
-	node = init_node();
-	if (!node)
-		return (NULL);
-	if (ft_strcmp(tokens[*i], "|") == 0)
-	{
-		node->type = NODE_PIPE;
-		(*i)++;
-		node->left = get_ast(tokens, i);
-		node->right = get_ast(tokens, i);
-	}
-	else if (!ft_strcmp(tokens[*i], ">") || !ft_strcmp(tokens[*i], "<")
-		|| !ft_strncmp(tokens[*i], ">>", 2) || !ft_strncmp(tokens[*i], "<<", 2))
-	{
-		if (!ft_strcmp(tokens[*i], "<"))
-			node->type = NODE_REDIR_IN;
-		if (!ft_strcmp(tokens[*i], ">"))
-			node->type = NODE_REDIR_OUT;
-		if (!ft_strncmp(tokens[*i], "<<", 2))
-			node->type = NODE_APPEND_IN;
-		if (!ft_strncmp(tokens[*i], ">>", 2))
-			node->type = NODE_APPEND_OUT;
-		(*i)++;
-		if (tokens[*i])
-		{
-			node->file = ft_strdup(tokens[*i]);
-			if (!node->file)
-			{
-				free(node);
-				return (NULL);
-			}
-			(*i)++;
-		}
-	}
+	p.tokens = *og_tokens;
+	p.head = p.tokens;
+	p.node = init_node();
+	if (!p.node)
+		return (set_error(ms, MALLOC_ERROR), NULL);
+	if (!p.tokens)
+		return (set_error(ms, MALLOC_ERROR), p.node);
+	if (p.tokens && !ft_strncmp(p.tokens->token, "(", 2))
+		return (free(p.node), handle_parenthesis(p.tokens, og_tokens, ms));
+	while (p.tokens && ft_strncmp(p.tokens->token, "&&", 3)
+					&& ft_strncmp(p.tokens->token, "||", 3))
+		p.tokens = p.tokens->next;
+	if (!p.tokens)
+		no_logic_parser(&p, ms);
 	else
 	{
-		start = *i;
-		node->type = NODE_CMD;
-		while (tokens[*i] && ft_strcmp(tokens[*i], "|") && ft_strcmp(tokens[*i],
-				">") && ft_strcmp(tokens[*i], "<") && ft_strcmp(tokens[*i],
-				">>") && ft_strcmp(tokens[*i], "<<"))
-			(*i)++;
-		size = *i - start;
-		node->args = (char **)malloc(sizeof(char *) * (size + 1));
-		if (!node->args)
-		{
-			free(node);
-			return (NULL);
-		}
-		j = 0;
-		while (j < size)
-		{
-			node->args[j] = ft_strdup(tokens[start + j]);
-			if (!node->args[j])
-			{
-				free_tab(node->args);
-				free(node);
-				return (NULL);
-			}
-			j++;
-		}
-		node->args[size] = NULL;
+		set_node_type(&p, ms);
+		cut_chain_and_recursive_call(&p, ms);
 	}
-	return (node);
+	return (p.node);
 }
-*/

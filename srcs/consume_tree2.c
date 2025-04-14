@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   consume_tree2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:16:13 by elopin            #+#    #+#             */
-/*   Updated: 2025/03/30 20:17:59 by elopin           ###   ########.fr       */
+/*   Updated: 2025/04/11 17:13:40 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,29 +52,6 @@ void	handle_here_doc(t_ast *ast, t_env *ms)
 	close(saved_stdin);
 }
 
-void	fork_and_execute_cmd(t_tokens *cmd, t_env *ms)
-{
-	pid_t	pid;
-
-	if (found_builtin(cmd, ms))
-		return ;
-	pid = fork();
-	ms->pididi = pid;
-	if (pid == -1)
-	{
-		perror("fork");
-		fd_printf(2, "\n%d %s\n", __FILE__, __LINE__);
-		exit_clean(ms, EXIT_FAILURE);
-	}
-	if (pid == 0)
-		execute_cmd(cmd, ms);
-	else
-	{
-		wait(NULL);
-		// fd_printf(2, "%d %s\n", __LINE__, __FILE__);
-	}
-}
-
 void	handle_and(t_ast *ast, t_env *ms)
 {
 	consume_tree(ast->left, ms);
@@ -83,8 +60,13 @@ void	handle_and(t_ast *ast, t_env *ms)
 
 void	consume_tree(t_ast *ast, t_env *ms)
 {
+	if (!ast)
+		return ;
 	if (ast->type == NODE_PIPE)
+	{
+		ms->saved_stdin = dup(STDIN_FILENO);
 		handle_pipe(ast, ms);
+	}
 	else if (ast->type == NODE_AND)
 		handle_and(ast, ms);
 	else if (ast->type == NODE_REDIR_IN)

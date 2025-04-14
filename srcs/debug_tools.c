@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:10:21 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/03/30 17:53:56 by elopin           ###   ########.fr       */
+/*   Updated: 2025/04/12 03:35:57 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,17 @@ void	print_tab(char **tab)
 
 void	print_tokens(t_tokens *tokens)
 {
+	fd_printf(2, "\nTOKENS=\n");
 	if (!tokens)
-		fd_printf(1, "(null)\n");
+		fd_printf(2, "(null)\n");
 	while (tokens && tokens->prev)
 		tokens = tokens->prev;
 	while (tokens)
 	{
-		fd_printf(1, "token:%s\ttype:%d\n", tokens->token, tokens->type);
+		fd_printf(2, "token:%s\ttype:%d\n", tokens->token, tokens->type);
 		tokens = tokens->next;
 	}
+	fd_printf(2, "\nTOKENS=\n");
 }
 
 void	print_ast(t_ast *node, int depth)
@@ -44,11 +46,10 @@ void	print_ast(t_ast *node, int depth)
 
 	if (!node)
 		return ;
-	// Indentation pour la lisibilité
+
 	for (int i = 0; i < depth; i++)
 		fd_printf(2, "  ");
 
-	// Afficher le type du nœud
 	if (node->type == NODE_CMD)
 	{
 		fd_printf(2, "CMD: ");
@@ -75,8 +76,8 @@ void	print_ast(t_ast *node, int depth)
 		fd_printf(2, "AND &&\n");
 	else if (node->type == NODE_OR)
 		fd_printf(2, "OR ||\n");
-
-	// Affichage récursif des sous-arbres
+	else if (node->type == UNDEFINED)
+		fd_printf(2, "(null)\n");
 	print_ast(node->left, depth + 1);
 	print_ast(node->right, depth + 1);
 }
