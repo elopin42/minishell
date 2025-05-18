@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:10:21 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/04/12 03:35:57 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/05/06 17:50:07 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	print_tokens(t_tokens *tokens)
 		fd_printf(2, "token:%s\ttype:%d\n", tokens->token, tokens->type);
 		tokens = tokens->next;
 	}
-	fd_printf(2, "\nTOKENS=\n");
+	fd_printf(2, "=TOKENS\n\n");
 }
 
 void	print_ast(t_ast *node, int depth)
@@ -80,4 +80,18 @@ void	print_ast(t_ast *node, int depth)
 		fd_printf(2, "(null)\n");
 	print_ast(node->left, depth + 1);
 	print_ast(node->right, depth + 1);
+}
+
+void	print_error(int err_flag)
+{
+	if (err_flag == 0)
+		fd_printf(2, "no error\n");
+	if (err_flag == 1)
+		fd_printf(2, "error\n");
+	if (err_flag == SYNTAX_ERROR)
+		fd_printf(2, "Syntax error\n");
+	if (err_flag == CMD_NOT_FOUND_ERROR)
+		fd_printf(2, "Command not found\n");
+	if (err_flag == 126)
+		fd_printf(2, "Permission denied\n");
 }

@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 14:18:45 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/04/11 05:39:42 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/05/05 13:32:10 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,16 @@ void	cleanup(t_env *ms)
 	close_all_fds();
 }
 
-void close_all_fds()
+void	close_all_fds(void)
 {
-    int i = 3;
-    while (i < 1024)
-    {
-        close(i);
-        i++;
-    }
+	int	i;
+
+	i = 3;
+	while (i < 1024)
+	{
+		close(i);
+		i++;
+	}
 }
 
 void	exit_clean(t_env *ms, int exit_code)
@@ -37,6 +39,7 @@ void	exit_clean(t_env *ms, int exit_code)
 	if (ms->pididi != 0)
 		kill(ms->pididi, SIGKILL);
 	save_history();
+	ms->last_exit_code = exit_code;
 	exit(exit_code);
 }
 

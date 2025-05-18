@@ -12,11 +12,25 @@ SRCSF=main.c \
 	  free_tools.c	\
 	  get_list_tokens.c \
 	  ft_tokens_list_tools.c \
+	  ft_tokens_list_tools2.c \
+	  ft_tokens_list_tools3.c \
 	  built-in.c	\
 	  consume_tree.c	\
 	  consume_tree2.c	\
 	  error_handling.c	\
-	  handle_parenthesis.c
+	  handle_parenthesis.c	\
+	  parsing_bool_tools.c	\
+	  parsing_misc_tools.c	\
+	  parsing_misc_tools2.c	\
+	  ast_tools.c	\
+	  built-in-extra.c	\
+	  built-in-function.c \
+	  built-in-main-system.c \
+	  pipe_tools.c \
+	  handle_pipe.c \
+	  exec_path_funcs.c \
+	  parsing_add_to_tokens.c \
+	  built_int_ultra.c
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/

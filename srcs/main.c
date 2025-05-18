@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:11:15 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/04/11 21:56:37 by elopin           ###   ########.fr       */
+/*   Updated: 2025/05/06 17:19:58 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,44 +22,46 @@ void	save_history(void)
 
 void	minishell_loop(t_env *ms)
 {
+	t_tokens	*tmp;
 
 	setup_signals();
 	while (42)
 	{
-		ms->err_flag = 0;
-		ms->cmd_line = readline("minishell> ");
+		ms->cmd_line = readline("\033[1;32mminishell>\033[0m");
 		if (!ms->cmd_line)
 		{
-			fd_printf(1, "exit de fdp\n");
-			fd_printf(1, "%d\n", sizeof(t_tokens));
+			printf("\033[1;31mexit\033[0m\n");
 			exit_clean(ms, 0);
 		}
 		if (ms->cmd_line && *ms->cmd_line)
 			add_history(ms->cmd_line);
 		if (ft_strcmp(ms->cmd_line, "\0") != 0)
 		{
-			get_list_tokens(ms);
-			fd_printf(1, "===TOKENS===\n");
-			print_tokens(ms->tokens);
-			fd_printf(1, "===TOKENS===\n");
-			
-			t_tokens *tmp;
-
-			tmp = dup_tokens(ms->tokens);
-			ms->ast = get_ast(&tmp, ms);
-
-			fd_printf(1, "===AVANT===\n");
-			print_ast(ms->ast, 0);
-			fd_printf(1, "===AVANT===\n\n");
-
-			// expand_tokens(ms->ast, ms);
-			// fd_printf(1, "===APRES===\n");
-			// print_ast(ms->ast, 0);
-			// fd_printf(1, "===APRES===\n\n");
-			if (!ms->err_flag)
-				consume_tree(ms->ast, ms);
+			ms->parse_error = 0;
+			if (bout_de_scotch(ms->cmd_line))
+				set_parse_error(ms, SYNTAX_ERROR);
 			else
-				fd_printf(2, "error\n");
+			{
+				get_list_tokens(ms);
+				// print_tokens(ms->tokens);
+				tmp = dup_tokens(ms->tokens);
+				ms->ast = get_ast(&tmp, ms);
+				// fd_printf(2, "\nMAIN AST=\n");
+				// print_ast(ms->ast, 0);
+				// fd_printf(2, "=MAIN AST\n\n");
+			}
+			if (!ms->parse_error)
+			{
+				consume_tree(ms->ast, ms);
+			}
+			else
+			{
+				fd_printf(2, "parse error: ");
+				print_error(ms->parse_error);
+				ms->last_exit_code = ms->parse_error;
+			}
+			if (!ms->parse_error && ms->last_exit_code)
+				print_error(ms->last_exit_code);
 			free(ms->cmd_line);
 			ft_clear_tokens(&ms->tokens, &free);
 			delete_ast(&ms->ast);
@@ -70,33 +72,37 @@ void	minishell_loop(t_env *ms)
 void	print_logo(void)
 {
 	printf("\033[1;32m");
-	printf("███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗\n");
-	printf("████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║\n");
-	printf("██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║\n");
-	printf("██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║\n");
-	printf("██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\n");
+	printf("██╗  ██╗███████╗██╗     ██╗\n");
+	printf("██║  ██║██╔════╝██║     ██║\n");
+	printf("███████║█████╗  ██║     ██║\n");
+	printf("██╔══██║██╔══╝  ██║     ██║\n");
+	printf("██║  ██║███████╗███████╗███████╗\n");
 	printf("\033[0m\n");
 }
 
-char **ft_copie_env(char **envp)
+char	**ft_copie_env(char **envp)
 {
-	int	i;
-	int	j;
-	char **tab;
+	int		i;
+	int		j;
+	char	**tab;
 
 	i = 0;
 	j = 0;
-	while(envp[i])
+	if (!envp)
+		return 0;
+	while (envp[i])
 		i++;
 	tab = malloc((sizeof(char *)) * (i + 1));
 	if (!tab)
 		return (0);
 	i = 0;
-	while(envp[i])
+	while (envp[i])
 	{
 		j = 0;
 		tab[i] = ft_calloc(ft_strlen(envp[i]) + 1, sizeof(char));
-		while(envp[i][j])
+		if (!tab[i])
+			return 0;
+		while (envp[i][j])
 		{
 			tab[i][j] = envp[i][j];
 			j++;
@@ -112,7 +118,7 @@ int	main(int ac, char **av, char **envp)
 	t_env	ms;
 
 	(void)ac;
-	print_logo();
+	// print_logo();
 	read_history(HISTORY_FILE);
 	ft_bzero(&ms, sizeof(t_env));
 	ms.envp = ft_copie_env(envp);

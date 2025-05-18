@@ -1,7 +1,7 @@
 NAME=libfdprintf.a
 FLAGS=-Wall -Wextra -Werror
 CC=cc
-HDRS=fd_printf.h
+HDRSDIR=./
 SRCS=fd_printf.c libft_tools.c print_functions.c print_functions2.c
 OBJS=$(SRCS:.c=.o)
 
@@ -12,7 +12,7 @@ $(NAME): $(OBJS)
 	ranlib $(NAME)
 
 %.o: %.c $(HDRS)
-	$(CC) $(FLAGS) -I $(HDRS) -c $<
+	$(CC) $(FLAGS) -I $(HDRSDIR) -c $<
 
 clean:
 	rm -rf $(OBJS)
