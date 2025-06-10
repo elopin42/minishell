@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:48:42 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/05 14:47:56 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/10 17:32:37 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,34 @@ typedef enum e_token_type
 {
 	SQUOTES,
 	DQUOTES,
-	NOQUOTES
+	NOQUOTES,
+	MULTI
 }					t_token_type;
+
+typedef enum e_quote_type
+{
+	NONE,
+	SINGLE_QUOTE,
+	DOUBLE_QUOTE
+}					t_quote_type;
+
+typedef struct s_token_part
+{
+	char			*content;
+	t_quote_type	quote;
+	bool			expand;
+	struct s_token_part	*next;
+}					t_token_part;
 
 typedef struct s_tokens
 {
 	char			*token;
 	t_token_type	type;
+	t_token_part	*parts;
 	struct s_tokens	*prev;
 	struct s_tokens	*next;
 }					t_tokens;
+
 
 typedef struct s_node
 {

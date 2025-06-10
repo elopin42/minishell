@@ -6,7 +6,7 @@
 /*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 16:53:56 by elopin            #+#    #+#             */
-/*   Updated: 2025/05/06 17:05:30 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:07:14 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,28 @@ void	ft_unset_co(char *str, t_env *ms)
 	}
 }
 
-void	ft_cd(char *path, t_env *ms)
+void ft_cd(char *path, t_env *ms)
 {
-	if (!path || !*path)
-		path = getenv("HOME");
-	if (chdir(path) == -1)
-		exit_clean(ms, 1);
+    if (!path || !*path || !ft_strcmp(path, "~"))
+        path = getenv("HOME");
+    else if (!ft_strcmp(path, "-"))
+    {
+        path = getenv("OLDPWD");
+        if (path)
+            printf("%s\n", path); 
+    }
+    if (!path)
+    {
+        ft_putstr_fd("cd: directory not found\n", 2);
+        ms->last_exit_code = 1;
+        return;
+    }
+    if (chdir(path) != 0)
+    {
+        perror("cd");
+        ms->last_exit_code = 1;
+        return;
+    }
+    
+    ms->last_exit_code = 0;
 }

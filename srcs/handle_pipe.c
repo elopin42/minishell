@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:01:50 by elopin            #+#    #+#             */
-/*   Updated: 2025/05/04 16:40:23 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/08 17:13:37 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	pipe_child_process(t_ast *current, int input_fd, int *pipe_fd,
 	close_all_fds();
 	consume_tree(current->left, ms);
 	cleanup(ms);
-	exit(EXIT_SUCCESS);
+	exit(ms->last_exit_code);
 }
 
 static void	pipe_last_child_process(t_ast *current, int input_fd,
@@ -54,7 +54,7 @@ static void	pipe_last_child_process(t_ast *current, int input_fd,
 	close_all_fds();
 	consume_tree(current, ms);
 	cleanup(ms);
-	exit(EXIT_SUCCESS);
+	exit(ms->last_exit_code);
 }
 
 static int	process_pipes_loop(t_ast **current, t_env *ms)

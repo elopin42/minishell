@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/04 21:07:49 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/09 15:17:54 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ int	end_of_token(char *line, int *start, t_env *ms)
 			return (i);
 		i++;
 	}
-	check_quotes_ended(t, ms);
+	if (!check_quotes_ended(t, ms))
+		return (-1);
 	return (i + 1);
 }
 
@@ -88,12 +89,21 @@ void	get_list_tokens(t_env *ms)
 	save_count = 0;
 	len_cmd = ft_strlen(ms->cmd_line);
 	count_to = end_of_token(ms->cmd_line, &save_count, ms);
+	if (count_to == -1)
+		return ;
 	while (save_count != -1 && save_count < len_cmd)
 	{
 		add_token(ms, save_count, count_to);
 		j++;
 		save_count = count_to;
 		if (save_count <= len_cmd)
+		{
 			count_to = end_of_token(ms->cmd_line, &save_count, ms);
+			if (count_to == -1)
+			{
+				print_error(ms->parse_error);
+				return ;
+			}
+		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:01:50 by elopin            #+#    #+#             */
-/*   Updated: 2025/05/05 17:54:49 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/10 14:22:37 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ int	handle_redir_out(t_ast *ast, t_env *ms)
 	int	out_fd;
 (void)ms;
 
-	fd_printf(2, "file: %s\n", ast->file);
 	out_fd = open(ast->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (out_fd == -1)
 	{

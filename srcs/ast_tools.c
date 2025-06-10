@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 15:17:46 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/06 15:48:36 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:12:25 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,12 @@ t_ast	*init_node(void)
 	return (node);
 }
 
-bool	is_not_redir(char *token)
+bool	is_not_redir(t_tokens *token)
 {
-	return (ft_strncmp(token, ">", 2) && ft_strncmp(token, "<", 2)
-		&& ft_strncmp(token, ">>", 3) && ft_strncmp(token, "<<", 3));
+	if (token->type == NOQUOTES)
+		return (ft_strncmp(token->token, ">", 2) && ft_strncmp(token->token, "<", 2)
+		&& ft_strncmp(token->token, ">>", 3) && ft_strncmp(token->token, "<<", 3));
+	return (1);
 }
 
 void	cut_chain_and_recursive_call(t_parser *p, t_env *ms)
@@ -62,7 +64,7 @@ void	append_arguments(t_parser *p, t_env *ms)
 		tmp = ft_strdup(p->right_tokens->token);
 		if (!tmp)
 			exit_clean(ms, 1);
-		ft_tokens_add_back(&p->left_tokens, ft_new_token(tmp, p->right_tokens->type));
+		ft_tokens_add_back(&p->left_tokens, ft_new_token(tmp, p->right_tokens->type, NULL));
 		token_tmp = p->right_tokens;
 		p->right_tokens = p->right_tokens->next;
 		free(token_tmp->token);
@@ -107,7 +109,8 @@ void	recursive_call_for_redir(t_parser *p, t_env *ms)
 	if (p->right_tokens)
 	{
 		tmp = p->right_tokens;
-		p->right_tokens->prev->next = NULL;
+		if (p->right_tokens->prev)
+			p->right_tokens->prev->next = NULL;
 		tmp->prev = NULL;
 		p->node->right = get_ast(&tmp, ms);
 	}

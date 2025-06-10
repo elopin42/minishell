@@ -6,14 +6,11 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:11:15 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/06 17:19:58 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/10 18:20:37 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-// j'ai mit un split en attendant ton parsing
-// segfault avec \n
 
 void	save_history(void)
 {
@@ -27,11 +24,34 @@ void	minishell_loop(t_env *ms)
 	setup_signals();
 	while (42)
 	{
-		ms->cmd_line = readline("\033[1;32mminishell>\033[0m");
+		//ms->cmd_line = readline("\001\033[1;32m\002minishell>\001\033[0m\002");
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+
+		rl_done = 0;
+		if (isatty(fileno(stdin)))
+		{
+			// printf("DEBUG: Starting new readline loop\n");
+			ms->cmd_line = readline("");
+			// printf("DEBUG: Got line: %s\n", ms->cmd_line ? ms->cmd_line : "NULL");
+		}
+		else
+		{
+			char *line = NULL;
+			line = get_next_line(fileno(stdin));
+			if (line)
+			{
+				ms->cmd_line = ft_strtrim(line, "\n");
+				free(line);
+			}
+			else {
+				ms->cmd_line = NULL;
+			}
+		}
 		if (!ms->cmd_line)
 		{
-			printf("\033[1;31mexit\033[0m\n");
-			exit_clean(ms, 0);
+//			printf("\033[1;31mexit\033[0m\n");
+			exit_clean(ms, ms->last_exit_code);
 		}
 		if (ms->cmd_line && *ms->cmd_line)
 			add_history(ms->cmd_line);
@@ -44,8 +64,15 @@ void	minishell_loop(t_env *ms)
 			{
 				get_list_tokens(ms);
 				// print_tokens(ms->tokens);
+				
+
 				tmp = dup_tokens(ms->tokens);
+				
 				ms->ast = get_ast(&tmp, ms);
+				// fd_printf(2, "\nDEBUG\n");
+				// print_error(ms->parse_error);
+				// fd_printf(2, "\nDEBUG\n");
+				
 				// fd_printf(2, "\nMAIN AST=\n");
 				// print_ast(ms->ast, 0);
 				// fd_printf(2, "=MAIN AST\n\n");
@@ -118,8 +145,8 @@ int	main(int ac, char **av, char **envp)
 	t_env	ms;
 
 	(void)ac;
-	// print_logo();
-	read_history(HISTORY_FILE);
+//	print_logo();
+	// read_history(HISTORY_FILE);
 	ft_bzero(&ms, sizeof(t_env));
 	ms.envp = ft_copie_env(envp);
 	ms.argv = av;

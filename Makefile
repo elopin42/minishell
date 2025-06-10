@@ -30,7 +30,10 @@ SRCSF=main.c \
 	  handle_pipe.c \
 	  exec_path_funcs.c \
 	  parsing_add_to_tokens.c \
-	  built_int_ultra.c
+	  built_int_ultra.c \
+	  get_next_line.c  \
+	  get_next_line_utils.c \
+	  split_tokens_by_quotes.c
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/

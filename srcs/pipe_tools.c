@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 15:45:03 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/04 17:03:46 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/08 17:52:33 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ void	fork_or_die(pid_t *pid)
 	}
 }
 
-static void	update_last_status(int *last_status, int status, pid_t pid, pid_t last_pid)
+
+static void update_last_status(int *last_status, int status, int pid, int last_pid)
 {
 	if (pid == last_pid)
 	{
@@ -42,7 +43,7 @@ static void	update_last_status(int *last_status, int status, pid_t pid, pid_t la
 	}
 }
 
-void	wait_and_restore_stdin(t_env *ms, int input_fd, pid_t last_pid)
+void	wait_and_restore_stdin(t_env *ms, int input_fd, int last_pid)
 {
 	int		status;
 	int		last_status;
@@ -50,12 +51,14 @@ void	wait_and_restore_stdin(t_env *ms, int input_fd, pid_t last_pid)
 
 	close(input_fd);
 	last_status = 0;
-	pid = wait(&status);
+	pid = waitpid(-1, &status, 0);
 	while (pid > 0)
 	{
 		update_last_status(&last_status, status, pid, last_pid);
-		pid = wait(&status);
+		pid = waitpid(-1, &status, 0);
 	}
+	if (pid == -1 && errno != ECHILD)
+		perror("waitpid");
 	ms->last_exit_code = last_status;
 	if (dup2(ms->saved_stdin, STDIN_FILENO) == -1)
 	{

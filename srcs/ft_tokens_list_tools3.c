@@ -6,13 +6,13 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 17:05:03 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/04 17:05:12 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/09 19:13:58 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_tokens	*ft_new_token(void const *content, t_token_type type)
+t_tokens	*ft_new_token(void const *content, t_token_type type, t_token_part *parts)
 {
 	t_tokens	*ret;
 
@@ -21,6 +21,7 @@ t_tokens	*ft_new_token(void const *content, t_token_type type)
 		return (NULL);
 	ret->token = (void *)content;
 	ret->type = type;
+	ret->parts = parts;
 	ret->prev = NULL;
 	ret->next = NULL;
 	return (ret);
@@ -45,19 +46,38 @@ t_tokens	*dup_tokens(t_tokens *og)
 {
 	t_tokens *head;
 	t_tokens *dup;
+	t_token_part *new_parts;
 	char *token;
 
 	dup = NULL;
 	head = og;
 	while (og)
 	{
-		token = ft_strdup(og->token);
-		if (!token)
+		if (og->token)
 		{
-			ft_clear_tokens(&head, &free);
-			return (NULL);
+			token = ft_strdup(og->token);
+			if (!token)
+			{
+				ft_clear_tokens(&head, &free);
+				return (NULL);
+			}
 		}
-		ft_tokens_add_back(&dup, ft_new_token(token, og->type));
+		else
+			token = NULL;
+		if (og->parts)
+		{
+			new_parts = dup_parts(og->parts);
+			if (!new_parts)
+			{
+				if (token)
+					free(token);
+				ft_clear_tokens(&head, &free);
+				return (NULL);
+			}
+		}
+		else
+			new_parts = NULL;
+		ft_tokens_add_back(&dup, ft_new_token(token, og->type, new_parts));
 		og = og->next;
 	}
 	og = head;

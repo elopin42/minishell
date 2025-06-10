@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:55:56 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/06 15:04:40 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/09 19:22:28 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void	ft_clear_tokens(t_tokens **lst, void (*del)(void *))
 		tmp = (*lst)->next;
 		if ((*lst)->token && del)
 			del((*lst)->token);
+		if ((*lst)->parts)
+			free_token_parts(&((*lst)->parts));
 		free(*lst);
 		(*lst) = tmp;
 	}

@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:12:09 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/06 17:23:13 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/10 18:03:41 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <stdbool.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include "get_next_line.h"
 # define CHILD 0
 # define HISTORY_FILE ".minishell_history"
 
@@ -38,8 +39,9 @@ void		print_tab(char **tab);
 void		handler(int sig);
 void		setup_signals(void);
 bool		choose_command(t_ast *ast, t_env *ms);
+int	is_valid_identifier(const char *s);
 void		free_tab(char **tab);
-bool		execute_cmd(t_tokens *cmd, t_env *ms);
+void		execute_cmd(t_tokens *cmd, t_env *ms);
 void		cleanup(t_env *ms);
 void		exit_clean(t_env *ms, int exit_code);
 t_ast		*get_ast(t_tokens **tokens, t_env *ms);
@@ -48,7 +50,7 @@ void		ft_tokens_add_back(t_tokens **lst, t_tokens *new);
 void		ft_tokens_add_front(t_tokens **lst, t_tokens *new);
 void		ft_clear_tokens(t_tokens **lst, void (*del)(void *));
 void		ft_del_token(t_tokens *lst, void (*del)(void *));
-t_tokens	*ft_new_token(void const *content, t_token_type type);
+t_tokens	*ft_new_token(void const *content, t_token_type type, t_token_part *parts);
 int			ft_lst_tokens_size(t_tokens *lst);
 void		print_tokens(t_tokens *tokens);
 void		get_list_tokens(t_env *ms);
@@ -103,10 +105,10 @@ bool		add_to_tokens(t_tokens **tokens, char *tmp, char *to_trim,
 				t_token_type type);
 bool		token_stops(char *line, int i, bool in_dquotes, bool in_quotes);
 void		handle_specials(char *line, int i, t_tknz_bools *t, t_env *ms);
-void		check_quotes_ended(t_tknz_bools t, t_env *ms);
+int		check_quotes_ended(t_tknz_bools t, t_env *ms);
 
 t_ast		*init_node(void);
-bool		is_not_redir(char *token);
+bool		is_not_redir(t_tokens *token);
 void		cut_chain_and_recursive_call(t_parser *p, t_env *ms);
 void		cut_chain_for_redir(t_parser *p, t_env *ms);
 void		recursive_call_for_redir(t_parser *p, t_env *ms);
@@ -123,6 +125,9 @@ void		ft_env(t_env *ms);
 char		*print_path(int a);
 void		ft_unset_co(char *str, t_env *ms);
 void		ft_cd(char *path, t_env *ms);
+char	*remove_quotes(char *str);
+bool	has_quotes(char *str);
+bool	check_builtin(t_tokens *token, char *builtin);
 bool		found_builtin(t_tokens *cmd, t_env *ms);
 bool		ft_export_extra(t_tokens *t, t_env *ms, int i);
 bool		ft_cd_sys(t_tokens *t, t_env *ms);
@@ -137,7 +142,7 @@ void		ft_old_and_pwd(t_env *ms);
 void		handle_pipe(t_ast *ast, t_env *ms);
 void		create_pipe(int *pipe_fd);
 void		fork_or_die(pid_t *pid);
-void		wait_and_restore_stdin(t_env *ms, int input_fd, pid_t last_pid);
+void		wait_and_restore_stdin(t_env *ms, int input_fd, int last_pid);
 
 char		*join_path(char *cmd, char **paths, t_env *ms);
 char		*get_path(char *cmd, char **envp, t_env *ms);
@@ -147,5 +152,11 @@ int			add_quotes_to_tokens(t_tokens **tokens, char *tmp, char *to_trim,
 int			add_no_quotes_to_tokens(t_tokens **tokens, char *tmp);
 char		*add_quotes_utils(char *str, char *envp);
 void		ft_exit(t_tokens *t, t_env *ms);
+
+t_token_part	*split_token_by_quotes(const char *str);
+
+void	free_token_parts(t_token_part **head);
+void	print_parts(t_token_part *parts);
+t_token_part    *dup_parts(t_token_part *parts);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 14:18:45 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/05 13:32:10 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:59:25 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	exit_clean(t_env *ms, int exit_code)
 		kill(ms->pididi, SIGKILL);
 	save_history();
 	ms->last_exit_code = exit_code;
+	// print_error(exit_code);
 	exit(exit_code);
 }
 

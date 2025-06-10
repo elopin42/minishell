@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:10:21 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/06 17:50:07 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/09 18:33:09 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,51 @@ void	print_tab(char **tab)
 	}
 }
 
-void	print_tokens(t_tokens *tokens)
+void	print_token_type(int type)
 {
-	fd_printf(2, "\nTOKENS=\n");
-	if (!tokens)
-		fd_printf(2, "(null)\n");
-	while (tokens && tokens->prev)
-		tokens = tokens->prev;
-	while (tokens)
+	const char *types[] = {
+		"WORD", "SQUOTES", "DQUOTES", "PIPE", "AND_IF",
+		"OR_IF", "REDIR_IN", "REDIR_OUT", "HEREDOC",
+		"APPEND", "PAREN_OPEN", "PAREN_CLOSE", "MULTI"
+	};
+
+	if (type >= 0 && type <= 12)
+		fd_printf(2, "%s", types[type]);
+	else
+		fd_printf(2, "UNKNOWN");
+}
+
+void	print_parts(t_token_part *parts)
+{
+	while (parts)
 	{
-		fd_printf(2, "token:%s\ttype:%d\n", tokens->token, tokens->type);
-		tokens = tokens->next;
+		fd_printf(2, "  ↳ part: \"%s\"\tquote: ", parts->content);
+		if (parts->quote == SINGLE_QUOTE)
+			fd_printf(2, "SINGLE");
+		else if (parts->quote == DOUBLE_QUOTE)
+			fd_printf(2, "DOUBLE");
+		else
+			fd_printf(2, "NONE");
+		fd_printf(2, "\texpand: %s\n", parts->expand ? "yes" : "no");
+		parts = parts->next;
 	}
-	fd_printf(2, "=TOKENS\n\n");
+}
+
+void print_tokens(t_tokens *tokens)
+{
+    fd_printf(2, "\n=== TOKENS ===\n");
+    if (!tokens)
+        fd_printf(2, "(null)\n");
+    while (tokens && tokens->prev)
+        tokens = tokens->prev;
+    while (tokens)
+    {
+	    fd_printf(2, "token: %s\ttype: %d\n", tokens->token ? tokens->token : "(null)", tokens->type);
+        if (tokens->parts)
+            print_parts(tokens->parts);
+        tokens = tokens->next;
+    }
+    fd_printf(2, "===============\n");
 }
 
 void	print_ast(t_ast *node, int depth)

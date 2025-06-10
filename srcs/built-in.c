@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 19:46:56 by elopin            #+#    #+#             */
-/*   Updated: 2025/05/06 17:52:36 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/08 18:54:07 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,30 @@ void	print_export(t_env *ms)
 			str = ft_strdup(tmp->envp[i]);
 		if (!str && set_error(ms, 1))
 			return ;
-		printf("declare -x %s\n", str);
+		printf("export %s\n", str);
 		free(str);
 		i++;
 	}
 }
+
+int	is_valid_identifier(const char *s)
+{
+	int	i;
+
+	if (!s || !s[0])
+		return (0);
+	if (!ft_isalpha(s[0]) && s[0] != '_')
+		return (0);
+	i = 1;
+	while (s[i] && s[i] != '=')
+	{
+		if (!ft_isalnum(s[i]) && s[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 
 int	ft_export(t_env *ms, char *var)
 {
@@ -75,8 +94,10 @@ int	ft_export(t_env *ms, char *var)
 	if (!var || var[0] == '=')
 		return (set_error(ms, 1), 1);
 	if (ft_strchr(var, '&'))
-		return (printf("export: `%s': not a valid identifier\n", var),
+		return(printf("export: `%s': not a valid identifier\n", var),
 			set_error(ms, 1));
+	if (!is_valid_identifier(var))
+		return (set_error(ms, 1));
 	key = ft_substr(var, 0, find_index(var, '='));
 	if (!key && set_error(ms, 1))
 		return (1);

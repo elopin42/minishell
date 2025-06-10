@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_misc_tools2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:51:41 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/04 15:13:17 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/09 17:10:52 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ bool	add_to_tokens(t_tokens **tokens, char *tmp, char *to_trim,
 	tmp2 = ft_strtrimv2(tmp, to_trim);
 	if (!tmp2)
 		return (0);
-	ft_tokens_add_back(tokens, ft_new_token(tmp2, type));
+	ft_tokens_add_back(tokens, ft_new_token(tmp2, type, NULL));
 	return (1);
 }
 
@@ -45,8 +45,12 @@ void	handle_specials(char *line, int i, t_tknz_bools *t, t_env *ms)
 		t->parenthesis_depth--;
 }
 
-void	check_quotes_ended(t_tknz_bools t, t_env *ms)
+int	check_quotes_ended(t_tknz_bools t, t_env *ms)
 {
 	if (t.in_quotes || t.in_dquotes || t.parenthesis_depth)
-		set_error(ms, SYNTAX_ERROR);
+	{
+		set_parse_error(ms, SYNTAX_ERROR);
+		return (0);
+	}
+	return (1);
 }
