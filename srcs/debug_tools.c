@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:10:21 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/09 18:33:09 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 22:35:02 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,9 @@ void	print_tab(char **tab)
 
 void	print_token_type(int type)
 {
-	const char *types[] = {
-		"WORD", "SQUOTES", "DQUOTES", "PIPE", "AND_IF",
-		"OR_IF", "REDIR_IN", "REDIR_OUT", "HEREDOC",
-		"APPEND", "PAREN_OPEN", "PAREN_CLOSE", "MULTI"
-	};
+	const char	*types[] = {"WORD", "SQUOTES", "DQUOTES", "PIPE", "AND_IF",
+		"OR_IF", "REDIR_IN", "REDIR_OUT", "HEREDOC", "APPEND", "PAREN_OPEN",
+		"PAREN_CLOSE", "MULTI"};
 
 	if (type >= 0 && type <= 12)
 		fd_printf(2, "%s", types[type]);
@@ -39,7 +37,7 @@ void	print_token_type(int type)
 		fd_printf(2, "UNKNOWN");
 }
 
-void	print_parts(t_token_part *parts)
+/*void	print_parts(t_token_part *parts)
 {
 	while (parts)
 	{
@@ -53,35 +51,34 @@ void	print_parts(t_token_part *parts)
 		fd_printf(2, "\texpand: %s\n", parts->expand ? "yes" : "no");
 		parts = parts->next;
 	}
-}
+}*/
 
-void print_tokens(t_tokens *tokens)
+/*void	print_tokens(t_tokens *tokens)
 {
-    fd_printf(2, "\n=== TOKENS ===\n");
-    if (!tokens)
-        fd_printf(2, "(null)\n");
-    while (tokens && tokens->prev)
-        tokens = tokens->prev;
-    while (tokens)
-    {
-	    fd_printf(2, "token: %s\ttype: %d\n", tokens->token ? tokens->token : "(null)", tokens->type);
-        if (tokens->parts)
-            print_parts(tokens->parts);
-        tokens = tokens->next;
-    }
-    fd_printf(2, "===============\n");
-}
+	fd_printf(2, "\n=== TOKENS ===\n");
+	if (!tokens)
+		fd_printf(2, "(null)\n");
+	while (tokens && tokens->prev)
+		tokens = tokens->prev;
+	while (tokens)
+	{
+		fd_printf(2, "token: %s\ttype: %d\n",
+			tokens->token ? tokens->token : "(null)", tokens->type);
+		if (tokens->parts)
+			print_parts(tokens->parts);
+		tokens = tokens->next;
+	}
+	fd_printf(2, "===============\n");
+}*/
 
-void	print_ast(t_ast *node, int depth)
+/*void	print_ast(t_ast *node, int depth)
 {
-	t_tokens *head;
+	t_tokens	*head;
 
 	if (!node)
 		return ;
-
 	for (int i = 0; i < depth; i++)
 		fd_printf(2, "  ");
-
 	if (node->type == NODE_CMD)
 	{
 		fd_printf(2, "CMD: ");
@@ -112,7 +109,7 @@ void	print_ast(t_ast *node, int depth)
 		fd_printf(2, "(null)\n");
 	print_ast(node->left, depth + 1);
 	print_ast(node->right, depth + 1);
-}
+}*/
 
 void	print_error(int err_flag)
 {

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_p.parenthesis.c                               :+:      :+:    :+:   */
+/*   handle_parenthesis.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 19:14:44 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/04/12 01:58:12 by tbeauman         ###   ########.fr       */
+/*   Created: 2025/06/11 21:00:42 by elopin            #+#    #+#             */
+/*   Updated: 2025/06/11 21:02:56 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,36 +72,4 @@ void	find_next_op(t_pparser *p)
 		&& ft_strncmp(p->op->token, "||", 3) && ft_strncmp(p->op->token, "|",
 			2))
 		p->op = p->op->next;
-}
-
-t_ast	*handle_parenthesis(t_tokens *tokens, t_tokens **og_tokens, t_env *ms)
-{
-	t_pparser	p;
-
-	p.open = tokens;
-	p.close = find_close(p.open, ms);
-	if (!p.close)
-		return (set_error(ms, SYNTAX_ERROR), NULL);
-	cut_chain(&p);
-	p.sub_ast = get_ast(&p.sub_expr, ms);
-	if (!p.sub_ast)
-		return (NULL);
-	*og_tokens = p.after_close;
-	if (!p.after_close)
-		return (p.sub_ast);
-	find_next_op(&p);
-	if (!p.op)
-		return (p.sub_ast);
-	isolate_op(&p);
-	p.parent = init_node();
-	if (!p.parent)
-	{
-		fd_printf(2, "%s %d", __FILE__, __LINE__);
-		return (set_error(ms, MALLOC_ERROR), NULL);
-	}
-	set_type(&p);
-	p.parent->cmd = p.op;
-	p.parent->left = p.sub_ast;
-	p.parent->right = get_ast(&p.right, ms);
-	return (p.parent);
 }

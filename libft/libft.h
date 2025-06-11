@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 13:14:04 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/25 03:02:51 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:44:59 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ size_t				ft_strlcat(char *dest, char *src, size_t size);
 char				*ft_strtrim(char const *s1, char const *set);
 
 char				*ft_substr(char const *s, unsigned int start, size_t len);
-int	ft_strcmp(const char *s1, const char *s2);
+int					ft_strcmp(const char *s1, const char *s2);
 
 int					ft_toupper(int c);
 int					ft_tolower(int c);
@@ -89,4 +89,4 @@ t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 
 #endif
 
-//j'ai changer new en snew car sa cree des bugs sur les pc a 42
+// j'ai changer new en snew car sa cree des bugs sur les pc a 42

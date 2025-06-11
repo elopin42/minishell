@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_list_tokens.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/09 15:17:54 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 22:14:30 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,17 @@
 
 int	end_of_token(char *line, int *start, t_env *ms)
 {
-	int				i;
 	t_tknz_bools	t;
 
 	t = (t_tknz_bools){0, 0, 0};
-	i = *start;
+	int (i) = *start;
 	if (!line)
 		return (-1);
 	while (line[i] && line[i] == ' ')
-	{
 		i++;
-	}
 	*start = i;
-	if (line[i] == 0)
-	{
-		if (is_operand1(&line[i - 1]))
-		{
-			return (i - 1);
-		}
-	}
+	if (line[i] == 0 && is_operand1(&line[i - 1]))
+		return (i - 1);
 	if (is_operand(&line[i]))
 		return (compute_end_operand_index(&line[i], i, start));
 	while (line[i])
@@ -56,26 +48,37 @@ void	add_token(t_env *ms, int save_count, int count_to)
 	tmp = ft_substr(ms->cmd_line, save_count, count_to - save_count);
 	if (!tmp)
 		exit_clean(ms, MALLOC_ERROR);
-	if (is_dquotes(tmp) && !add_quotes_to_tokens(&ms->tokens, tmp, "\"", DQUOTES))
+	if (is_dquotes(tmp) && !add_quotes_to_tokens(&ms->tokens, tmp, "\"",
+			DQUOTES))
+	{
+		fd_printf(2, "%d %s\n", __LINE__, __FILE__);
 		exit_clean(ms, MALLOC_ERROR);
-	else if (is_squotes(tmp) && !add_quotes_to_tokens(&ms->tokens, tmp, "\'", SQUOTES))
+	}
+	else if (is_squotes(tmp) && !add_quotes_to_tokens(&ms->tokens, tmp, "\'",
+			SQUOTES))
 		exit_clean(ms, MALLOC_ERROR);
-	else if (!is_dquotes(tmp) && !is_squotes(tmp) && !add_no_quotes_to_tokens(&ms->tokens,
-			tmp))
+	else if (!is_dquotes(tmp) && !is_squotes(tmp)
+		&& !add_no_quotes_to_tokens(&ms->tokens, tmp))
 		exit_clean(ms, MALLOC_ERROR);
 	free(tmp);
 	tmp = NULL;
 }
 
-bool	bout_de_scotch(char *cmd_line)
+bool	check_edges(char *cmd_line)
 {
-	if (ft_strlen(cmd_line) > 1 && is_operand1(&cmd_line[ft_strlen(cmd_line)
-			- 1]) && cmd_line[ft_strlen(cmd_line) - 1] != ')')
+	char	*line;
+
+	line = ft_strtrim(cmd_line, " ");
+	if (!line)
 		return (1);
-	if (ft_strlen(cmd_line) > 2 && is_operand2(&cmd_line[ft_strlen(cmd_line)
-			- 2]))
-		return (1);
-	return (0);
+	if (is_operand1(line) || is_operand2(line))
+		return (free(line), 1);
+	if (ft_strlen(line) > 1 && is_operand1(&line[ft_strlen(line) - 1])
+		&& line[ft_strlen(line) - 1] != ')')
+		return (free(line), 1);
+	if (ft_strlen(line) > 2 && is_operand2(&line[ft_strlen(line) - 2]))
+		return (free(line), 1);
+	return (free(line), 0);
 }
 
 void	get_list_tokens(t_env *ms)
@@ -100,10 +103,7 @@ void	get_list_tokens(t_env *ms)
 		{
 			count_to = end_of_token(ms->cmd_line, &save_count, ms);
 			if (count_to == -1)
-			{
-				print_error(ms->parse_error);
-				return ;
-			}
+				return (print_error(ms->parse_error));
 		}
 	}
 }

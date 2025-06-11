@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_bool_tools.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:43:56 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/04 18:56:10 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 22:03:51 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,14 @@ int	is_operand(char *str)
 	return (0);
 }
 
-bool	is_dquotes(char *tmp)
+int	is_logic_operator(char *str)
 {
-	return (tmp[0] == '\"' && tmp[ft_strlen(tmp) - 1] == '\"');
+	return (!ft_strncmp(str, "&&", 2) || !ft_strncmp(str, "||", 2)
+		|| !ft_strncmp(str, "|", 1));
 }
 
-bool	is_squotes(char *tmp)
+int	is_redirection(char *str)
 {
-	return (tmp[0] == '\'' && tmp[ft_strlen(tmp) - 1] == '\'');
+	return (!ft_strncmp(str, "<", 1) || !ft_strncmp(str, ">", 1)
+		|| !ft_strncmp(str, "<<", 2) || !ft_strncmp(str, ">>", 2));
 }

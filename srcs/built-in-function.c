@@ -6,7 +6,7 @@
 /*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 16:53:56 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/10 16:07:14 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/11 17:52:44 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,8 @@ char	*print_path(int a)
 
 void	ft_unset_co(char *str, t_env *ms)
 {
-	int	i;
-	int	j;
-
-	j = 0;
-	i = -1;
+	int (i) = 0;
+	int (j) = -1;
 	if (!ms->envp && set_error(ms, 1))
 		return ;
 	while (ms->envp[++i])
@@ -60,37 +57,38 @@ void	ft_unset_co(char *str, t_env *ms)
 			&& (ms->envp[i][ft_strlen(str)] == '='
 			|| ms->envp[i][ft_strlen(str)] == '\0'))
 		{
+			free(ms->envp[i]);
 			j = i - 1;
 			while (ms->envp[++j])
 				ms->envp[j] = ms->envp[j + 1];
-			ms->envp[j] = NULL;
 			return ;
 		}
 	}
 }
 
-void ft_cd(char *path, t_env *ms)
+void	ft_cd(char *path, t_env *ms)
 {
-    if (!path || !*path || !ft_strcmp(path, "~"))
-        path = getenv("HOME");
-    else if (!ft_strcmp(path, "-"))
-    {
-        path = getenv("OLDPWD");
-        if (path)
-            printf("%s\n", path); 
-    }
-    if (!path)
-    {
-        ft_putstr_fd("cd: directory not found\n", 2);
-        ms->last_exit_code = 1;
-        return;
-    }
-    if (chdir(path) != 0)
-    {
-        perror("cd");
-        ms->last_exit_code = 1;
-        return;
-    }
-    
-    ms->last_exit_code = 0;
+	if (!path || !*path || !ft_strcmp(path, "~"))
+		path = getenv("HOME");
+	else if (!ft_strcmp(path, "-"))
+	{
+		path = getenv("OLDPWD");
+		if (path)
+			printf("%s\n", path);
+		else
+		{
+			printf("cd: OLDPWD not set\n");
+			ms->last_exit_code = 1;
+			return ;
+		}
+	}
+	if (!path)
+	{
+		ft_putstr_fd("cd: directory not found\n", 2);
+		ms->last_exit_code = 1;
+		return ;
+	}
+	if (chdir(path) != 0)
+		return (ms->last_exit_code = 1, perror("cd"));
+	ms->last_exit_code = 0;
 }

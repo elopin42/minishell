@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   fd_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/13 12:56:08 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/02/21 08:09:46 by tbeauman         ###   ########.fr       */
+/*   Created: 2025/06/11 16:43:45 by elopin            #+#    #+#             */
+/*   Updated: 2025/06/11 16:45:58 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#ifndef FD_PRINTF_H
+# define FD_PRINTF_H
 
-# include <stdlib.h>
 # include <stdarg.h>
+# include <stdlib.h>
 # include <unistd.h>
 
 void	ft_putchar(char c, int fd);

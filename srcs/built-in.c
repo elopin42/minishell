@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built-in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 19:46:56 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/08 18:54:07 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 17:27:34 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,20 +82,32 @@ int	is_valid_identifier(const char *s)
 	return (1);
 }
 
+bool	is_valid_export_identifier(const char *s)
+{
+	int	i;
+
+	i = 0;
+	if (!s || (!ft_isalpha(s[0]) && s[0] != '_'))
+		return (false);
+	while (s[i] && s[i] != '=')
+	{
+		if (!ft_isalnum(s[i]) && s[i] != '_')
+			return (false);
+		i++;
+	}
+	return (true);
+}
 
 int	ft_export(t_env *ms, char *var)
 {
 	char	*key;
-	int		h;
-	int		i;
 
-	i = -1;
-	h = 0;
+	int (h) = 0;
 	if (!var || var[0] == '=')
 		return (set_error(ms, 1), 1);
-	if (ft_strchr(var, '&'))
-		return(printf("export: `%s': not a valid identifier\n", var),
-			set_error(ms, 1));
+	if (!is_valid_export_identifier(var) || ft_strchr(var, '&'))
+		return (printf("export: `%s': not a valid identifier\n", var),
+			set_error(ms, 1), 1);
 	if (!is_valid_identifier(var))
 		return (set_error(ms, 1));
 	key = ft_substr(var, 0, find_index(var, '='));
@@ -110,49 +122,4 @@ int	ft_export(t_env *ms, char *var)
 	else
 		creat_export(ms, var);
 	return (ms->last_exit_code = 0, 1);
-}
-
-int	ft_shlvl(t_env *ms)
-{
-	int		b;
-	int		i;
-	char	*tmp;
-	char	*str;
-
-	b = 0;
-	tmp = NULL;
-	str = NULL;
-	i = find_key(ms->envp, "SHLVL");
-	if (i < 0 && ft_export(ms, "SHLVL=1"))
-		return (set_error(ms, 1), 1);
-	str = ft_substr(ms->envp[i], find_index(ms->envp[i], '=') + 1,
-			ft_strlen(ms->envp[i]));
-	if (!str && set_error(ms, 1))
-		return (set_error(ms, 1), 1);
-	b = ft_atoi(str) + 1;
-	free(str);
-	tmp = ft_itoa(b);
-	if (!tmp)
-		return (set_error(ms, 1), 0);
-	str = ft_strjoin("SHLVL=", tmp);
-	free(tmp);
-	if (!str)
-		return (0);
-	return (ft_export(ms, str), free(str), 1);
-}
-
-void	ft_old_and_pwd(t_env *ms)
-{
-	char	*str;
-	char	*tmp;
-
-	str = print_path(0);
-	tmp = NULL;
-	tmp = ft_strjoin("PWD=", str);
-	if (find_key(ms->envp, "OLDPWD") < 0)
-		ft_export(ms, "OLDPWD");
-	ft_export(ms, tmp);
-	free(tmp);
-	free(str);
-	ft_shlvl(ms);
 }

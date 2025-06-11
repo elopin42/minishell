@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_path_funcs.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 17:01:29 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/09 20:31:38 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/11 15:44:38 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,63 +40,22 @@ char	*join_path(char *cmd, char **paths, t_env *ms)
 	return (0);
 }
 
-/*char	*get_path(char *cmd, char **envp, t_env *ms)
-{
-	char	**paths;
-	int		i;
-
-	i = 0;
-	while (envp[i] && ft_strnstr(envp[i], "PATH=", 5) == 0)
-		i++;
-	if (!envp[i])
-		exit_clean(ms, EXIT_FAILURE);
-	paths = ft_split(envp[i] + 5, ':');
-	if (!paths)
-		exit_clean(ms, EXIT_FAILURE);
-	return (join_path(cmd, paths, ms));
-}*/
-
 char	*get_path(char *cmd, char **envp, t_env *ms)
 {
 	char	**paths;
 	char	*path_var;
 	int		i;
-	
+
 	i = 0;
 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
 		i++;
 	if (!envp[i] || !*(envp[i] + 5))
-		return (NULL); // PATH is unset or empty
+		return (NULL);
 	path_var = envp[i] + 5;
 	if (!*path_var)
-		return (NULL); // PATH is empty
+		return (NULL);
 	paths = ft_split(path_var, ':');
 	if (!paths)
 		exit_clean(ms, EXIT_FAILURE);
 	return (join_path(cmd, paths, ms));
 }
-
-/*char	*get_path(char *cmd, char **envp, t_env *ms)
-{
-	char	**paths;
-	char	*path_var;
-	int		i;
-
-	i = 0;
-	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
-		i++;
-
-	if (!envp[i] || !*(envp[i] + 5))
-		return (NULL); // PATH est unset
-
-	path_var = envp[i] + 5;
-	if (!*path_var)
-		return (NULL); // PATH est vide
-
-	paths = ft_split(path_var, ':');
-	if (!paths)
-		exit_clean(ms, EXIT_FAILURE);
-
-	return (join_path(cmd, paths, ms));
-}*/
-

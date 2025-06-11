@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tokens_list_tools2.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 17:00:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/05/04 17:05:13 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 21:56:53 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,3 +36,36 @@ void	ft_del_token(t_tokens *lst, void (*del)(void *))
 	}
 }
 
+void	handle_no_pipe_case(t_parser *p, t_env *ms)
+{
+	p->tokens = p->head;
+	while (p->tokens && is_not_redir(p->tokens))
+		p->tokens = p->tokens->next;
+	if (!p->tokens)
+	{
+		p->node->cmd = p->head;
+		p->node->type = NODE_CMD;
+		return ;
+	}
+	set_node_type(p, ms);
+	if ((p->node->type == NODE_APPEND_OUT
+			|| p->node->type == NODE_REDIR_IN
+			|| p->node->type == NODE_REDIR_OUT
+			|| p->node->type == NODE_HERE_DOC) && p->tokens->prev == 0)
+	{
+		set_parse_error(ms, SYNTAX_ERROR);
+		ft_clear_right_tokens(&p->tokens, &free);
+		return ;
+	}
+	cut_chain_for_redir(p, ms);
+	recursive_call_for_redir(p, ms);
+}
+
+void	handle_pipe_case(t_parser *p, t_env *ms)
+{
+	set_node_type(p, ms);
+	if (p->node->type != NODE_CMD)
+		cut_chain_and_recursive_call(p, ms);
+	else
+		p->node->cmd = p->head;
+}

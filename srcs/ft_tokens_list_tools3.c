@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tokens_list_tools3.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 17:05:03 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/09 19:13:58 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 22:09:50 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_tokens	*ft_new_token(void const *content, t_token_type type, t_token_part *parts)
+t_tokens	*ft_new_token(void const *content, t_token_type type,
+		t_token_part *parts)
 {
 	t_tokens	*ret;
 
@@ -42,44 +43,63 @@ int	ft_lst_tokens_size(t_tokens *lst)
 	return (i);
 }
 
+t_token_part	*dup_token_parts(t_tokens *og, t_tokens *head, char *token)
+{
+	t_token_part	*parts;
+
+	parts = NULL;
+	if (og->parts)
+	{
+		parts = dup_parts(og->parts);
+		if (!parts)
+		{
+			if (token)
+				free(token);
+			ft_clear_tokens(&head, &free);
+			return (NULL);
+		}
+	}
+	return (parts);
+}
+
+char	*dup_token_str(t_tokens *og, t_tokens *head)
+{
+	char	*token;
+
+	token = NULL;
+	if (og->token)
+	{
+		token = ft_strdup(og->token);
+		if (!token)
+		{
+			ft_clear_tokens(&head, &free);
+			return (NULL);
+		}
+	}
+	return (token);
+}
+
 t_tokens	*dup_tokens(t_tokens *og)
 {
-	t_tokens *head;
-	t_tokens *dup;
-	t_token_part *new_parts;
-	char *token;
+	t_tokens		*head;
+	t_tokens		*dup;
+	t_tokens		*new;
+	char			*token;
+	t_token_part	*parts;
 
 	dup = NULL;
 	head = og;
 	while (og)
 	{
-		if (og->token)
-		{
-			token = ft_strdup(og->token);
-			if (!token)
-			{
-				ft_clear_tokens(&head, &free);
-				return (NULL);
-			}
-		}
-		else
-			token = NULL;
-		if (og->parts)
-		{
-			new_parts = dup_parts(og->parts);
-			if (!new_parts)
-			{
-				if (token)
-					free(token);
-				ft_clear_tokens(&head, &free);
-				return (NULL);
-			}
-		}
-		else
-			new_parts = NULL;
-		ft_tokens_add_back(&dup, ft_new_token(token, og->type, new_parts));
+		token = dup_token_str(og, head);
+		if (og->token && !token)
+			return (NULL);
+		parts = dup_token_parts(og, head, token);
+		if (og->parts && !parts)
+			return (NULL);
+		new = ft_new_token(token, og->type, parts);
+		ft_tokens_add_back(&dup, new);
 		og = og->next;
 	}
-	og = head;
 	return (dup);
 }

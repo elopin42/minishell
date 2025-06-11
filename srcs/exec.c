@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 01:42:38 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/10 18:11:38 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/11 21:19:28 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,120 +45,74 @@ char	**tokens_to_array(t_tokens *cmd)
 	return (ret);
 }
 
-// void	execute_cmd(t_tokens *cmd, t_env *ms)
-// {
-// 	char	*path;
-// 	char	**argscmd;
-
-// 	if (access(cmd->token, F_OK) == 0)
-// 	{
-// 		path = ft_strdup(cmd->token);
-// 		if (!path)
-// 			exit_clean(ms, EXIT_FAILURE);
-// 	}
-// 	else
-// 	{
-// 		path = get_path(cmd->token, ms->envp, ms);
-// 		if (!path)
-// 		{
-// 			perror("cmd not found\n");
-// 			exit_clean(ms, CMD_NOT_FOUND_ERROR);
-// 		}
-// 	}
-// 	argscmd = tokens_to_array(cmd);
-// 	if (!argscmd)
-// 		exit_clean(ms, EXIT_FAILURE);
-// 	if (execve(path, argscmd, ms->envp) == -1)
-// 	{
-// 		if (errno == ENOENT)
-// 		{
-// 			perror("cmd not found");
-// 			exit_clean(ms, CMD_NOT_FOUND_ERROR);
-// 		}
-// 		else if (errno == EACCES || errno == EISDIR)
-// 		{
-// 			perror("Access denied or is a directory");
-// 			exit_clean(ms, 126);
-// 		}
-// 		else
-// 		{
-// 			perror("Misc error");
-// 			exit_clean(ms, 1);
-// 		}
-// 	}
-// }
-
-void    execute_cmd(t_tokens *cmd, t_env *ms)
+static char	*get_cmd_path(t_tokens *cmd, t_env *ms)
 {
-    char    *path;
-    char    **argscmd;
-    
+	char	*path;
+
+	path = NULL;
+	if (access(cmd->token, F_OK) == 0)
+	{
+		if (access(cmd->token, X_OK) == 0)
+		{
+			path = ft_strdup(cmd->token);
+			if (!path)
+				exit_clean(ms, EXIT_FAILURE);
+		}
+		else
+		{
+			fd_printf(2, "%s: Permission denied\n", cmd->token);
+			exit_clean(ms, 126);
+		}
+	}
+	else
+	{
+		path = get_path(cmd->token, ms->envp, ms);
+		if (!path)
+			return (fd_printf(2, "%s: command not found\n", cmd->token),
+				exit_clean(ms, 127), NULL);
+	}
+	return (path);
+}
+
+void	execute_cmd(t_tokens *cmd, t_env *ms)
+{
+	char	*path;
+	char	**argscmd;
+	int		code;
+
 	if (!cmd->token || cmd->token[0] == '\0')
 		exit_clean(ms, 0);
-
-    // if (strchr(cmd->token, '/'))
-    // {
-        if (access(cmd->token, F_OK) == 0)
-        {
-            if (access(cmd->token, X_OK) == 0)
-            {
-				path = ft_strdup(cmd->token);
-                if (!path)
-                    exit_clean(ms, EXIT_FAILURE);
-            }
-            else
-            {
-				fd_printf(2, "%s: Permission denied\n", cmd->token);
-                exit_clean(ms, 126);
-            }
-        }
-        else
-            // exit_clean(ms, 127);
-    // }
-    // else
-    {
-        path = get_path(cmd->token, ms->envp, ms);
-        if (!path)
-        {
-			fd_printf(2, "%s: command not found\n", cmd->token);
-            exit_clean(ms, 127);
-        }
-    }
-    
-    argscmd = tokens_to_array(cmd);
-    if (!argscmd)
-        exit_clean(ms, EXIT_FAILURE);
-    
-    if (execve(path, argscmd, ms->envp) == -1)
-    {
-        if (errno == ENOENT)
-        {
-            perror("No such file or directory");
-            exit_clean(ms, 127);
-        }
-        else if (errno == EACCES || errno == EISDIR)
-        {
-            perror("Permission denied");
-            exit_clean(ms, 126);
-        }
-        else
-        {
-            perror("Misc error");
-            exit_clean(ms, 1);
-        }
-    }
+	path = get_cmd_path(cmd, ms);
+	argscmd = tokens_to_array(cmd);
+	if (!argscmd)
+		exit_clean(ms, EXIT_FAILURE);
+	if (execve(path, argscmd, ms->envp) == -1)
+	{
+		if (errno == ENOENT)
+			perror("No such file or directory");
+		else if (errno == EACCES || errno == EISDIR)
+			perror("Permission denied");
+		else
+			perror("Misc error");
+		if (errno == EACCES || errno == EISDIR)
+			code = 126;
+		else
+			code = 1;
+		exit_clean(ms, code);
+	}
 }
 
 void	wait_for_child(pid_t pid, t_env *ms)
 {
-	int		status;
+	int	status;
+	int	sig;
 
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		ms->last_exit_code = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
-		int sig = WTERMSIG(status);
+		sig = WTERMSIG(status);
 		ms->last_exit_code = 128 + sig;
 		if (sig == SIGINT)
 			write(1, "\n", 1);
@@ -177,24 +131,20 @@ void	fork_and_execute_cmd(t_tokens *cmd, t_env *ms)
 	ms->pididi = pid;
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);   // Ctrl+C
+		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-	// fd_printf(2, "%d %s: cmd: %s\n", __LINE__, __FILE__, cmd);
 		expand_command(&cmd, ms);
-	// fd_printf(2, "%d %s\n", __LINE__, __FILE__);
 		while (cmd && (!cmd->token || cmd->token[0] == '\0'))
 			cmd = cmd->next;
 		if (!cmd)
 			exit_clean(ms, 0);
 		execute_cmd(cmd, ms);
+		return ;
 	}
-	else
+	wait_for_child(pid, ms);
+	if (ms->ast && ms->ast->type == NODE_PIPE)
 	{
-		wait_for_child(pid, ms);
-		if (ms->ast && ms->ast->type == NODE_PIPE)
-		{
-			dup2(ms->saved_stdin, STDIN_FILENO);
-			close(ms->saved_stdin);
-		}
+		dup2(ms->saved_stdin, STDIN_FILENO);
+		close(ms->saved_stdin);
 	}
 }

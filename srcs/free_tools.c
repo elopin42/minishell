@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_tools.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 14:18:45 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/10 13:59:25 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 21:52:23 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	exit_clean(t_env *ms, int exit_code)
 		kill(ms->pididi, SIGKILL);
 	save_history();
 	ms->last_exit_code = exit_code;
-	// print_error(exit_code);
 	exit(exit_code);
 }
 
@@ -61,16 +60,13 @@ void	free_tab(char **tab)
 	free(tab);
 }
 
-void	delete_ast(t_ast **node)
+void	free_token(t_tokens **tok)
 {
-	if (!*node)
+	if (!*tok)
 		return ;
-	delete_ast(&((*node)->left));
-	delete_ast(&((*node)->right));
-	if ((*node)->cmd)
-		ft_clear_tokens(&((*node)->cmd), &free);
-	if ((*node)->file_token)
-		ft_clear_tokens(&(*node)->file_token, &free);
-	free(*node);
-	*node = NULL;
+	if ((*tok)->type == MULTI && (*tok)->parts)
+		free_token_parts(&(*tok)->parts);
+	else if ((*tok)->token)
+		free((*tok)->token);
+	free(*tok);
 }

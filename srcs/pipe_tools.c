@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_tools.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 15:45:03 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/08 17:52:33 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:47:36 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ void	fork_or_die(pid_t *pid)
 	}
 }
 
-
-static void update_last_status(int *last_status, int status, int pid, int last_pid)
+static void	update_last_status(int *last_status, int status, int pid,
+		int last_pid)
 {
 	if (pid == last_pid)
 	{

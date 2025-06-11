@@ -30,10 +30,24 @@ SRCSF=main.c \
 	  handle_pipe.c \
 	  exec_path_funcs.c \
 	  parsing_add_to_tokens.c \
+	  parsing_add_to_tokens2.c \
+	  parsing_add_to_tokens3.c \
+	  parsing_add_to_tokens4.c \
 	  built_int_ultra.c \
 	  get_next_line.c  \
 	  get_next_line_utils.c \
-	  split_tokens_by_quotes.c
+	  split_tokens_by_quotes.c \
+	  built-in-for-norme.c	\
+	  consume_tree4.c \
+	  consume_tree_norme.c	\
+	  consume_tree_handle.c \
+	  expand_tokens_norme.c \
+	  ast_tools2.c	\
+	  parsing_bool_tools2.c \
+	  expand_token2.c \
+	  search_and_destroy.c \
+	  minishell_loop.c \
+	  minishell_loop2.c
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/

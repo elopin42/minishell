@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 10:55:56 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/09 19:22:28 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 17:04:40 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ void	ft_clear_right_tokens(t_tokens **lst, void (*del)(void *))
 	while (*lst)
 	{
 		tmp = (*lst)->next;
-		del((*lst)->token);
+		if ((*lst)->token && del)
+			del((*lst)->token);
+		if ((*lst)->parts)
+			free_token_parts(&((*lst)->parts));
 		free(*lst);
 		(*lst) = tmp;
 	}

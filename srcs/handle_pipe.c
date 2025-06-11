@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_pipe.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:01:50 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/08 17:13:37 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:46:06 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,7 @@ static void	pipe_child_process(t_ast *current, int input_fd, int *pipe_fd,
 	exit(ms->last_exit_code);
 }
 
-static void	pipe_last_child_process(t_ast *current, int input_fd,
-		t_env *ms)
+static void	pipe_last_child_process(t_ast *current, int input_fd, t_env *ms)
 {
 	if (input_fd != STDIN_FILENO)
 	{
