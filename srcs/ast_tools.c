@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_tools.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 15:17:46 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/11 20:42:15 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/12 23:12:46 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,22 +80,28 @@ t_tokens	*dup_token(t_tokens *token)
 
 void	append_arguments(t_parser *p, t_env *ms)
 {
-	t_tokens	*token_tmp;
-	t_tokens	*new_tok;
+	t_tokens	*current;
+	t_tokens	*last;
 
-	while (p->right_tokens && !is_logic_operator(p->right_tokens->token))
+	(void)ms;
+	while (p->right_tokens && !is_logic_operator(p->right_tokens->token)
+		&& !is_redirection_operator(p->right_tokens->token))
 	{
-		new_tok = dup_token(p->right_tokens);
-		if (!new_tok)
-		{
-			exit_clean(ms, MALLOC_ERROR);
-		}
-		ft_tokens_add_back(&p->left_tokens, new_tok);
-		token_tmp = p->right_tokens;
+		current = p->right_tokens;
 		p->right_tokens = p->right_tokens->next;
-		free_token(&token_tmp);
-		token_tmp = NULL;
 		if (p->right_tokens)
 			p->right_tokens->prev = NULL;
+		current->next = NULL;
+		current->prev = NULL;
+		if (!p->left_tokens)
+			p->left_tokens = current;
+		else
+		{
+			last = p->left_tokens;
+			while (last->next)
+				last = last->next;
+			last->next = current;
+			current->prev = last;
+		}
 	}
 }

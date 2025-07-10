@@ -47,7 +47,7 @@ SRCSF=main.c \
 	  expand_token2.c \
 	  search_and_destroy.c \
 	  minishell_loop.c \
-	  minishell_loop2.c
+	  minishell_loop2.c 
 OBJSF=$(SRCSF:.c=.o)
 SRCDIR=srcs/
 OBJDIR=objs/

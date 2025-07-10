@@ -6,7 +6,7 @@
 /*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 15:45:03 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/11 15:47:36 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/12 22:10:09 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,10 @@ void	wait_and_restore_stdin(t_env *ms, int input_fd, int last_pid)
 	}
 	close(ms->saved_stdin);
 	close_all_fds();
+}
+
+int	is_redirection_operator(char *token)
+{
+	return (token && (!strcmp(token, "<") || !strcmp(token, "<<")
+			|| !strcmp(token, ">") || !strcmp(token, ">>")));
 }

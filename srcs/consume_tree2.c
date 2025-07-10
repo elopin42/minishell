@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   consume_tree2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:16:13 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/11 18:15:48 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/11 23:34:32 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,6 @@
 int						handle_here_doc(t_ast *ast, t_env *ms);
 
 volatile sig_atomic_t	g_heredoc_interrupted = 0;
-
-void	handle_and(t_ast *ast, t_env *ms)
-{
-	consume_tree(ast->left, ms);
-	if (!ms->last_exit_code)
-		consume_tree(ast->right, ms);
-}
 
 static int	handle_heredocs(t_ast **stack, int top, t_env *ms)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built-in-for-norme.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 16:03:11 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/11 19:41:53 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/13 00:29:29 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,6 @@ bool	check_builtin(t_tokens *token, char *builtin, t_env *ms)
 			return (free_token(&cpy), false);
 	}
 	reconstructed = expand_parts(token->parts, ms);
-	fd_printf(2, "%s\n", reconstructed);
 	if (!reconstructed)
 		return (false);
 	if (!ft_strcmp(reconstructed, builtin))

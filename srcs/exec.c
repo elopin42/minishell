@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 01:42:38 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/11 21:19:28 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/13 00:25:04 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	execute_cmd(t_tokens *cmd, t_env *ms)
 			code = 126;
 		else
 			code = 1;
-		exit_clean(ms, code);
+		ptit_clean_du_cul(&argscmd, &path, ms, code);
 	}
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 08:12:09 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/11 22:45:56 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/13 00:24:42 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,10 @@ void							append_arguments(t_parser *p, t_env *ms);
 t_tokens						*find_close(t_tokens *tokens, t_env *ms);
 t_token_part					*new_token_part(char *content,
 									t_quote_type quote, bool expand);
+int								is_redirection_operator(char *token);
 void							append_token_part(t_token_part **head,
 									t_token_part *new_part);
+void							trunc_node_cmd(t_parser *p);
 void							cut_chain(t_pparser *p);
 void							set_node_type(t_parser *p, t_env *ms);
 void							isolate_op(t_pparser *p);
@@ -87,10 +89,13 @@ int								process_plain_part(t_token_part **parts_head,
 int								process_quoted_part(t_quote_args *a, int start,
 									int len, char quote_char);
 void							print_error(int err_flag);
+void							special_ninja(t_parser *p, t_env *ms);
 void							print_tab(char **tab);
 void							search_and_destroy(t_tokens **tokens,
 									t_env *ms);
 void							setup_readline_signals(void);
+void							ptit_clean_du_cul(char ***argscmd, char **path,
+									t_env *ms, int code);
 void							handle_sigint_readline(int sig);
 int								get_user_input(t_env *ms);
 void							parse_command(t_env *ms);
@@ -140,6 +145,7 @@ void							consume_tree(t_ast *ast, t_env *ms);
 bool							found_builtin(t_tokens *cmd, t_env *ms);
 t_tokens						*dup_tokens(t_tokens *og);
 void							save_history(void);
+void							handle_or(t_ast *ast, t_env *ms);
 int								handle_append_out(t_ast *ast, t_env *ms);
 int								handle_redir_out(t_ast *ast, t_env *ms);
 int								handle_redir_in(t_ast *ast, t_env *ms);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:10:21 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/11 22:35:02 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/13 00:22:05 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ void	print_token_type(int type)
 		fd_printf(2, "\texpand: %s\n", parts->expand ? "yes" : "no");
 		parts = parts->next;
 	}
-}*/
+}
 
-/*void	print_tokens(t_tokens *tokens)
+void	print_tokens(t_tokens *tokens)
 {
 	fd_printf(2, "\n=== TOKENS ===\n");
 	if (!tokens)
@@ -69,9 +69,9 @@ void	print_token_type(int type)
 		tokens = tokens->next;
 	}
 	fd_printf(2, "===============\n");
-}*/
+}
 
-/*void	print_ast(t_ast *node, int depth)
+void	print_ast(t_ast *node, int depth)
 {
 	t_tokens	*head;
 

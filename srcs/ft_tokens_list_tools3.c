@@ -6,7 +6,7 @@
 /*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 17:05:03 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/11 22:09:50 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/12 22:01:07 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,13 @@ t_tokens	*dup_tokens(t_tokens *og)
 	{
 		token = dup_token_str(og, head);
 		if (og->token && !token)
-			return (NULL);
+			return (ft_clear_tokens(&dup, &free), NULL);
 		parts = dup_token_parts(og, head, token);
 		if (og->parts && !parts)
-			return (NULL);
+			return (free(token), ft_clear_tokens(&dup, &free), NULL);
 		new = ft_new_token(token, og->type, parts);
+		if (!new)
+			return (free(token), ft_clear_tokens(&dup, &free), NULL);
 		ft_tokens_add_back(&dup, new);
 		og = og->next;
 	}

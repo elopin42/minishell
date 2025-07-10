@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_list_tokens.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 09:05:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/11 22:14:30 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/13 00:20:16 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,4 +106,10 @@ void	get_list_tokens(t_env *ms)
 				return (print_error(ms->parse_error));
 		}
 	}
+}
+
+void	trunc_node_cmd(t_parser *p)
+{
+		p->node->cmd->prev = NULL;
+		p->node->cmd->next = NULL;
 }

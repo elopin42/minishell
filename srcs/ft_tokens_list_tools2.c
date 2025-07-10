@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tokens_list_tools2.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 17:00:31 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/11 21:56:53 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/13 00:18:38 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ void	handle_no_pipe_case(t_parser *p, t_env *ms)
 	set_node_type(p, ms);
 	if ((p->node->type == NODE_APPEND_OUT
 			|| p->node->type == NODE_REDIR_IN
-			|| p->node->type == NODE_REDIR_OUT
-			|| p->node->type == NODE_HERE_DOC) && p->tokens->prev == 0)
+			|| p->node->type == NODE_REDIR_OUT) && p->tokens->prev == 0
+		&& !p->tokens->next)
 	{
 		set_parse_error(ms, SYNTAX_ERROR);
 		ft_clear_right_tokens(&p->tokens, &free);

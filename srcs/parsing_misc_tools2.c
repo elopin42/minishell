@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:51:41 by tbeauman          #+#    #+#             */
-/*   Updated: 2025/06/09 17:10:52 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/13 00:25:48 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,11 @@ int	check_quotes_ended(t_tknz_bools t, t_env *ms)
 		return (0);
 	}
 	return (1);
+}
+
+void	ptit_clean_du_cul(char ***argscmd, char **path, t_env *ms, int code)
+{
+	free_tab(*argscmd);
+	free(*path);
+	exit_clean(ms, code);
 }

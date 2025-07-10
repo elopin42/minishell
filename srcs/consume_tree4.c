@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 17:55:35 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/11 20:15:46 by tbeauman         ###   ########.fr       */
+/*   Updated: 2025/06/11 23:31:53 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ void	consume_tree(t_ast *ast, t_env *ms)
 	}
 	else if (ast->type == NODE_AND)
 		handle_and(ast, ms);
+	else if (ast->type == NODE_OR)
+		handle_or(ast, ms);
 	else if (ast->type == NODE_CMD)
 	{
 		if (ast->cmd->token && ast->cmd->token[0] == 0)

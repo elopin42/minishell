@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   consume_tree.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:01:50 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/11 19:55:59 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/11 23:34:05 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,20 @@ int	handle_redir_in(t_ast *ast, t_env *ms)
 	}
 	close(in_fd);
 	return (0);
+}
+
+void	handle_and(t_ast *ast, t_env *ms)
+{
+	consume_tree(ast->left, ms);
+	if (!ms->last_exit_code)
+		consume_tree(ast->right, ms);
+}
+
+void	handle_or(t_ast *ast, t_env *ms)
+{
+	if (!ast || !ast->left || !ast->right)
+		return ;
+	consume_tree(ast->left, ms);
+	if (ms->last_exit_code != 0)
+		consume_tree(ast->right, ms);
 }

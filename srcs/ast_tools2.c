@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_tools2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 20:40:10 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/11 21:53:53 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/13 00:19:28 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	cut_chain_for_redir(t_parser *p, t_env *ms)
 	{
 		p->node->file = p->file_token->token;
 		p->right_tokens = p->file_token->next;
+		if (p->right_tokens)
+			p->right_tokens->prev = NULL;
 		p->file_token->prev = NULL;
 		p->file_token->next = NULL;
 		p->node->file_token = p->file_token;
@@ -40,8 +42,8 @@ void	cut_chain_for_redir(t_parser *p, t_env *ms)
 		p->head = NULL;
 	append_arguments(p, ms);
 	p->node->cmd = p->tokens;
-	p->node->cmd->prev = NULL;
-	p->node->cmd->next = NULL;
+	if (p->node->cmd)
+		trunc_node_cmd(p);
 }
 
 static bool	handle_quoted(const char *str, int *i, t_token_part **parts)

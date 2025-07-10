@@ -6,7 +6,7 @@
 /*   By: elopin <elopin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 18:12:33 by elopin            #+#    #+#             */
-/*   Updated: 2025/06/11 18:13:34 by elopin           ###   ########.fr       */
+/*   Updated: 2025/06/12 21:53:46 by elopin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,10 @@ int	heredoc_loop(t_ast *ast, int pipe_fd[2])
 	while (1)
 	{
 		line = readline("here-doc> ");
-		if (g_heredoc_interrupted || !line)
-		{
+		if (g_heredoc_interrupted)
 			return (130);
+		if (!line)
+		{
 			write(STDERR_FILENO,
 				"warning: here-document delimited by end-of-file (wanted `",
 				58);
@@ -38,10 +39,7 @@ int	heredoc_loop(t_ast *ast, int pipe_fd[2])
 			return (0);
 		}
 		if (!ft_strcmp(line, ast->file))
-		{
-			free(line);
-			break ;
-		}
+			return (free(line), 0);
 		write(pipe_fd[1], line, ft_strlen(line));
 		write(pipe_fd[1], "\n", 1);
 		free(line);
